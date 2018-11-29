@@ -56,20 +56,21 @@ INSERT INTO office (org_id, name, address, phone, is_active) VALUES (
     '+7 499 245 7876',
     TRUE
 );
-INSERT  INTO organization (head_office_id) VALUES (1) WHERE id = 1;
-INSERT  INTO organization (head_office_id) VALUES (3) WHERE id = 2;
+UPDATE organization SET head_office_id = 1 WHERE id = 1;
+UPDATE organization SET head_office_id = 3 WHERE id = 2;
+
 INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Иван', 'Иванов', 'стажер', '+7 917 345 4554', '2001-02-02 09:16:22', 21, 643, TRUE
+    1, 'Иван', 'Иванов', 'стажер', '+7 917 345 4554', '2001-02-02', 21, 643, TRUE
 );
 INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Сидоров', 'Петр', 'инженер', '+7 917 453 4554', '1996-05-21 12:12:22', 91, 882, TRUE
+    1, 'Сидоров', 'Петр', 'инженер', '+7 917 453 4554', '1996-05-21', 91, 882, TRUE
 );
 INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Котов', 'Константин', 'специалист', '+7 917 432 6678', '2002-04-18 19:56:22', 03, 643, FALSE
+    1, 'Котов', 'Константин', 'специалист', '+7 917 432 6678', '2002-04-18', 03, 643, FALSE
 );
 INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Петров', 'Максим', 'руководитель', '+7 917 535 4534', '1999-01-27 14:45:23', 91, 040, TRUE
+    1, 'Петров', 'Максим', 'руководитель', '+7 917 535 4534', '1999-01-27', 91, 040, TRUE
 );
 INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Архипов', 'Вячеслав', 'водитель', '+7 917 321 2331', '2001-11-16 13:51:45', 07, 643, FALSE
+    1, 'Архипов', 'Вячеслав', 'водитель', '+7 917 321 2331', '2001-11-16', 07, 643, FALSE
 );

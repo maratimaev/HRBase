@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS organization (
   kpp             VARCHAR (50)  NOT NULL,
   address         VARCHAR (200) NOT NULL,
   phone           VARCHAR (20),
-  head_office_id  INTEGER NOT NULL,
+  head_office_id  INTEGER,
   is_active       BOOLEAN DEFAULT FALSE
 );
 
@@ -27,7 +27,7 @@ CREATE INDEX IX_headOffice_id ON organization (head_office_id);
 
 CREATE TABLE IF NOT EXISTS user (
   id                INTEGER PRIMARY KEY AUTO_INCREMENT,
-  office_id         INTEGER,
+  office_id         INTEGER NOT NULL,
   first_name        VARCHAR (50) NOT NULL,
   last_name         VARCHAR (50),
   middle_name       VARCHAR (50),
