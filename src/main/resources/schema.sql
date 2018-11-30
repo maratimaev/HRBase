@@ -20,12 +20,12 @@ CREATE TABLE IF NOT EXISTS office (
 );
 
 ALTER TABLE office ADD FOREIGN KEY (org_id) REFERENCES organization(id);
-CREATE INDEX IX_organization_id ON office (org_id);
+CREATE INDEX IX_office_org_id ON office (org_id);
 
 ALTER TABLE organization ADD FOREIGN KEY (head_office_id) REFERENCES office(id);
-CREATE INDEX IX_headOffice_id ON organization (head_office_id);
+CREATE INDEX IX_organization_head_office_id ON organization (head_office_id);
 
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS employer (
   id                INTEGER PRIMARY KEY AUTO_INCREMENT,
   office_id         INTEGER NOT NULL,
   first_name        VARCHAR (50) NOT NULL,
@@ -40,37 +40,21 @@ CREATE TABLE IF NOT EXISTS user (
   is_identified     BOOLEAN DEFAULT FALSE
 );
 
-ALTER TABLE user ADD FOREIGN KEY (office_id) REFERENCES office(id);
-CREATE INDEX IX_office_id ON user (office_id);
+ALTER TABLE employer ADD FOREIGN KEY (office_id) REFERENCES office(id);
+CREATE INDEX IX_employer_office_id ON employer (office_id);
 
 CREATE TABLE IF NOT EXISTS doc (
   code  INTEGER PRIMARY KEY NOT NULL,
   name  VARCHAR (100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS user_doc (
-  user_code INTEGER NOT NULL,
-  doc_code INTEGER NOT NULL,
-  FOREIGN KEY (user_code) REFERENCES doc(code)      ON DELETE RESTRICT ON UPDATE CASCADE,
-  FOREIGN KEY (doc_code)  REFERENCES user(doc_code) ON DELETE RESTRICT ON UPDATE CASCADE,
-  PRIMARY KEY (user_code, doc_code)
-);
-
-CREATE INDEX IX_user_doc_user_code_id ON user_doc (user_code);
-CREATE INDEX IX_user_doc_doc_code     ON user_doc (doc_code);
+ALTER TABLE employer ADD FOREIGN KEY (doc_code) REFERENCES doc(code);
+CREATE INDEX IX_employer_doc_code ON employer (doc_code);
 
 CREATE TABLE IF NOT EXISTS country (
   code  INTEGER PRIMARY KEY NOT NULL,
   name  VARCHAR (100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS user_country (
-  user_code     INTEGER NOT NULL,
-  country_code  INTEGER NOT NULL,
-  FOREIGN KEY (user_code)     REFERENCES country(code)          ON DELETE RESTRICT ON UPDATE CASCADE,
-  FOREIGN KEY (country_code)  REFERENCES user(citizenship_code) ON DELETE RESTRICT ON UPDATE CASCADE,
-  PRIMARY KEY (user_code, country_code)
-);
-
-CREATE INDEX IX_user_country_user_code    ON user_country (user_code);
-CREATE INDEX IX_user_country_country_code ON user_country (country_code);
+ALTER TABLE employer ADD FOREIGN KEY (citizenship_code) REFERENCES country(code);
+CREATE INDEX IX_employer_citizenship_code ON employer (citizenship_code);
