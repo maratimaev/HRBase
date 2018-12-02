@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table, td, th {
+            border: 1px solid #999;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Organizations</h2>
+<form method="post" action="filter">
+    <input type="text" name="name" />
+    <input type="text" name="inn" />
+    <input type="checkbox" name="isActive" />
+    <button type="submit">Find</button>
+</form>
+
+<table>
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>fullName</th>
+        <th>inn</th>
+        <th>kpp</th>
+        <th>address</th>
+        <th>phone</th>
+        <th>isActive</th>
+    </tr>
+
+    {{#organizations}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{fullName}}</td>
+        <td>{{inn}}</td>
+        <td>{{kpp}}</td>
+        <td>{{address}}</td>
+        <td>{{phone}}</td>
+        <td>{{isActive}}</td>
+    </tr>
+    {{/organizations}}
+    <!--<div>-->
+    <!--{{#organizations}}-->
+    <!--<div>-->
+    <!--<b>{{id}}</b>-->
+    <!--<span>{{name}}</span>-->
+    <!--</div>-->
+    <!--{{/organizations}}-->
+
+    <!--</div>-->
+</table>
+</body>
+</html>

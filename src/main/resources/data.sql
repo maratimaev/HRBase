@@ -1,14 +1,20 @@
-INSERT INTO country (code, name) VALUES (643, 'Российская Федерация');
-INSERT INTO country (code, name) VALUES (620, 'Португальская Республика');
-INSERT INTO country (code, name) VALUES (882, 'Независимое Государство Самоа');
-INSERT INTO country (code, name) VALUES (250, 'Французская Республика');
-INSERT INTO country (code, name) VALUES (040, 'Австрийская Республика');
+INSERT INTO country (code, name) VALUES ('643', 'Российская Федерация');
+INSERT INTO country (code, name) VALUES ('620', 'Португальская Республика');
+INSERT INTO country (code, name) VALUES ('882', 'Независимое Государство Самоа');
+INSERT INTO country (code, name) VALUES ('250', 'Французская Республика');
+INSERT INTO country (code, name) VALUES ('040', 'Австрийская Республика');
 
-INSERT INTO doc (code, name) VALUES (21, 'Паспорт гражданина РФ');
-INSERT INTO doc (code, name) VALUES (03, 'Свидетельство о рождении');
-INSERT INTO doc (code, name) VALUES (07, 'Военный билет');
-INSERT INTO doc (code, name) VALUES (24, 'Удостоверение личности военнослужащего Российской Федерации');
-INSERT INTO doc (code, name) VALUES (91, 'Иные документы');
+INSERT INTO document (code, name) VALUES ('21', 'Паспорт гражданина РФ');
+INSERT INTO document (code, name) VALUES ('03', 'Свидетельство о рождении');
+INSERT INTO document (code, name) VALUES ('07', 'Военный билет');
+INSERT INTO document (code, name) VALUES ('24', 'Удостоверение личности военнослужащего Российской Федерации');
+INSERT INTO document (code, name) VALUES ('91', 'Иные документы');
+
+INSERT INTO employer_document (type_id, number, date) VALUES (1, '123456789', '2001-02-02');
+INSERT INTO employer_document (type_id, number, date) VALUES (2, '987654321', '1996-05-21');
+INSERT INTO employer_document (type_id, number, date) VALUES (3, '1231231', '2002-04-18');
+INSERT INTO employer_document (type_id, number, date) VALUES (1, '453456423', '1999-01-27');
+INSERT INTO employer_document (type_id, number, date) VALUES (5, '90765752356', '2001-11-16');
 
 INSERT INTO organization (name, full_name, inn, kpp, address, phone, is_active) VALUES (
     'ООО «Пример»',
@@ -56,21 +62,18 @@ INSERT INTO office (org_id, name, address, phone, is_active) VALUES (
     '+7 499 245 7876',
     TRUE
 );
-UPDATE organization SET head_office_id = 1 WHERE id = 1;
-UPDATE organization SET head_office_id = 3 WHERE id = 2;
-
-INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Иван', 'Иванов', 'стажер', '+7 917 345 4554', '2001-02-02', 21, 643, TRUE
+INSERT INTO employer (office_id, first_name, last_name, position, phone, document_id, citizenship_id, is_identified) VALUES (
+    1, 'Иван', 'Иванов', 'стажер', '+7 917 345 4554', '1', '1', TRUE
 );
-INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Сидоров', 'Петр', 'инженер', '+7 917 453 4554', '1996-05-21', 91, 882, TRUE
+INSERT INTO employer (office_id, first_name, last_name, position, phone, document_id, citizenship_id, is_identified) VALUES (
+    1, 'Петр', 'Сидоров', 'инженер', '+7 917 453 4554', '2', '3', TRUE
 );
-INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Котов', 'Константин', 'специалист', '+7 917 432 6678', '2002-04-18', 03, 643, FALSE
+INSERT INTO employer (office_id, first_name, last_name, position, phone, document_id, citizenship_id, is_identified) VALUES (
+    2, 'Константин', 'Котов', 'специалист', '+7 917 432 6678', '3', '1', FALSE
 );
-INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Петров', 'Максим', 'руководитель', '+7 917 535 4534', '1999-01-27', 91, 040, TRUE
+INSERT INTO employer (office_id, first_name, last_name, position, phone, document_id, citizenship_id, is_identified) VALUES (
+    3, 'Максим', 'Петров', 'руководитель', '+7 917 535 4534', '4', '5', TRUE
 );
-INSERT INTO user (office_id, first_name, last_name, position, phone, date, doc_code, citizenship_code, is_identified) VALUES (
-    1, 'Архипов', 'Вячеслав', 'водитель', '+7 917 321 2331', '2001-11-16', 07, 643, FALSE
+INSERT INTO employer (office_id, first_name, last_name, position, phone, document_id, citizenship_id, is_identified) VALUES (
+    3, 'Вячеслав', 'Архипов', 'водитель', '+7 917 321 2331', '5', '2', FALSE
 );
