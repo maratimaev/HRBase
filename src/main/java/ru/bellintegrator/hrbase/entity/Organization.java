@@ -1,5 +1,7 @@
 package ru.bellintegrator.hrbase.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +37,7 @@ public class Organization {
     @Column(name = "is_active")
     private boolean isActive = false;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organization")
     private Set<Office> offices = new HashSet<>();
 

@@ -1,5 +1,7 @@
 package ru.bellintegrator.hrbase.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 /**
@@ -24,6 +26,7 @@ public class Office {
     @Column(name = "is_active")
     private boolean isActive = true;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "org_id")
     private Organization organization;
