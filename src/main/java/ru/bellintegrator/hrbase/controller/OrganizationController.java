@@ -1,8 +1,6 @@
 package ru.bellintegrator.hrbase.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.aspectj.weaver.ast.Or;
-import org.hibernate.dialect.OracleTypesHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +8,8 @@ import ru.bellintegrator.hrbase.Exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.OutputProfile.OrganizationProfile;
 import ru.bellintegrator.hrbase.entity.Organization;
 import ru.bellintegrator.hrbase.repository.OrganizationRepository;
-import sun.awt.SunToolkit;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -25,13 +21,7 @@ import java.util.Optional;
 public class OrganizationController {
     @Autowired
     private OrganizationRepository organizationRepository;
-
-    @JsonView(OrganizationProfile.Full.class)
-    @RequestMapping(value = "/list", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Organization> main() {
-        List<Organization> list = organizationRepository.findAll();
-        return organizationRepository.findAll();
-    }
+    private OrganizationSpecification organizationSpecification;
 
     @JsonView(OrganizationProfile.Full.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,19 +39,17 @@ public class OrganizationController {
         return org.get();
     }
 
-//    @PostMapping("filter")
-//    public String filter(@RequestParam String name,
-//                         @RequestParam String inn,
-//                         @RequestParam boolean isActive,
-//                         Map<String, Object> model){
-//        Iterable<Organization> organizations;
-//        if(name != null && !name.isEmpty()){
-//            organizations = organizationRepository.findOrganizationsByName(name);
-//            //organizations = organizationRepository.findOrganizationsByIsActiveTrue();
-//        } else {
-//            organizations = organizationRepository.findAll();
-//        }
-//        model.put("organizations", organizations);
-//        return "organization";
+    @JsonView(OrganizationProfile.Full.class)
+    @RequestMapping(value = "/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Organization> organizationList(@RequestParam String name, @RequestParam String inn, @RequestParam String isActive){
+        List<Organization> organizations = organizationRepository.findAll(organizationSpecification.organizationList(name, inn, isActive));
+        return organizations;
+    }
+
+//    @JsonView(OrganizationProfile.Full.class)
+//    @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public Wrapper<Organization> organizationList() {
+//        return new Wrapper<>(organizationRepository.findAll());
 //    }
+
 }

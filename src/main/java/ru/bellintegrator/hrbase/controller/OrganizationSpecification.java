@@ -1,6 +1,5 @@
 package ru.bellintegrator.hrbase.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.data.jpa.domain.Specification;
 import ru.bellintegrator.hrbase.entity.Organization;
 
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public class OrganizationSpecification {
 
-    public static Specification<Organization> organizationList(String name, String inn, String isActive) {
+    public Specification<Organization> organizationList(String name, String inn, String isActive) {
         return new Specification<Organization>() {
             @Override
             public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
