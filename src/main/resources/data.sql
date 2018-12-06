@@ -4,17 +4,17 @@ INSERT INTO country (code, name) VALUES ('882', 'Независимое Госу
 INSERT INTO country (code, name) VALUES ('250', 'Французская Республика');
 INSERT INTO country (code, name) VALUES ('040', 'Австрийская Республика');
 
-INSERT INTO document (code, name) VALUES ('21', 'Паспорт гражданина РФ');
-INSERT INTO document (code, name) VALUES ('03', 'Свидетельство о рождении');
-INSERT INTO document (code, name) VALUES ('07', 'Военный билет');
-INSERT INTO document (code, name) VALUES ('24', 'Удостоверение личности военнослужащего Российской Федерации');
-INSERT INTO document (code, name) VALUES ('91', 'Иные документы');
+INSERT INTO document_type (code, name) VALUES ('21', 'Паспорт гражданина РФ');
+INSERT INTO document_type (code, name) VALUES ('03', 'Свидетельство о рождении');
+INSERT INTO document_type (code, name) VALUES ('07', 'Военный билет');
+INSERT INTO document_type (code, name) VALUES ('24', 'Удостоверение личности военнослужащего Российской Федерации');
+INSERT INTO document_type (code, name) VALUES ('91', 'Иные документы');
 
-INSERT INTO employer_document (type_id, number, date) VALUES (1, '123456789', '2001-02-02');
-INSERT INTO employer_document (type_id, number, date) VALUES (2, '987654321', '1996-05-21');
-INSERT INTO employer_document (type_id, number, date) VALUES (3, '1231231', '2002-04-18');
-INSERT INTO employer_document (type_id, number, date) VALUES (1, '453456423', '1999-01-27');
-INSERT INTO employer_document (type_id, number, date) VALUES (5, '90765752356', '2001-11-16');
+INSERT INTO document (type_id, number, date) VALUES (1, '123456789', '2001-02-02');
+INSERT INTO document (type_id, number, date) VALUES (2, '987654321', '1996-05-21');
+INSERT INTO document (type_id, number, date) VALUES (3, '1231231', '2002-04-18');
+INSERT INTO document (type_id, number, date) VALUES (1, '453456423', '1999-01-27');
+INSERT INTO document (type_id, number, date) VALUES (5, '90765752356', '2001-11-16');
 
 INSERT INTO organization (name, full_name, inn, kpp, address, phone, is_active) VALUES (
     'ООО «Пример»',

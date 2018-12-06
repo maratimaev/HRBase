@@ -1,28 +1,39 @@
 package ru.bellintegrator.hrbase.entity;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Date;
 
 /**
- * @author Marat Imaev (mailto:imaevmarat@outlook.com)
- * @since 01.12.2018
+ * Документ сотрудника
  */
 @Entity
 @Table(name = "document")
 public class Document {
+    /**
+     * Id документа
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
-    private String code;
+    /**
+     * Тип документа
+     */
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private DocumentType documentType;
 
+    /**
+     * Номер документа
+     */
     @Column(nullable = false)
-    private String name;
+    private String number;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "document")
-    private Set<EmployerDocument> employerDocuments = new HashSet<>();
+    /**
+     * Дата выдачи
+     */
+    @Column(nullable = false)
+    private Date date;
 
     public Document() {
     }
@@ -32,22 +43,24 @@ public class Document {
     public void setId(int id) {
         this.id = id;
     }
-    public String getCode() {
-        return code;
+    public String getNumber() {
+        return number;
     }
-    public void setCode(String code) {
-        this.code = code;
+    public void setNumber(String number) {
+        this.number = number;
     }
-    public String getName() {
-        return name;
+    public Date getDate() {
+        return date;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setDate(Date date) {
+        this.date = date;
     }
-    public Set<EmployerDocument> getEmployerDocuments() {
-        return employerDocuments;
+
+    public DocumentType getDocumentType() {
+        return documentType;
     }
-    public void setEmployerDocuments(Set<EmployerDocument> employerDocuments) {
-        this.employerDocuments = employerDocuments;
+
+    public void setDocumentType(DocumentType documentType) {
+        this.documentType = documentType;
     }
 }

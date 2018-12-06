@@ -2,51 +2,77 @@ package ru.bellintegrator.hrbase.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.OutputProfile.OrganizationProfile;
+import ru.bellintegrator.hrbase.profile.OrganizationProfile;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Marat Imaev (mailto:imaevmarat@outlook.com)
- * @since 01.12.2018
+ * Сущность, связанная с таблицей Organization
  */
 @Entity
 @Table(name = "organization")
 public class Organization {
+    /**
+     * id организации
+     */
     @JsonView(OrganizationProfile.Short.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    /**
+     * Имя организации
+     */
     @JsonView(OrganizationProfile.Short.class)
     @Column(nullable = false)
     private String name;
 
+    /**
+     * Полное имя организации
+     */
     @JsonView(OrganizationProfile.Full.class)
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    /**
+     * Инн организации
+     */
     @JsonView(OrganizationProfile.Full.class)
     @Column(nullable = false)
     private String inn;
 
+    /**
+     * КПП организации
+     */
     @JsonView(OrganizationProfile.Full.class)
     @Column(nullable = false)
     private String kpp;
 
+    /**
+     * Адрес
+     */
     @JsonView(OrganizationProfile.Full.class)
     @Column(nullable = false)
     private String address;
 
+    /**
+     * Телефон
+     */
     @JsonView(OrganizationProfile.Full.class)
     private String phone;
 
+    /**
+     * Признак активности
+     */
     @JsonView(OrganizationProfile.Short.class)
     @Column(name = "is_active")
     private boolean isActive = false;
 
+    /**
+     * Список офисов организации
+     */
     @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organization")
     private Set<Office> offices = new HashSet<>();

@@ -1,15 +1,22 @@
 package ru.bellintegrator.hrbase.controller;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.bellintegrator.hrbase.Exception.ThereIsNoSuchOrganization;
+import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.entity.Organization;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Спецификации для создания запросов к БД
+ */
 public class OrganizationSpecification {
 
+    /** Поиск организации по id
+     * @param id организации
+     * @return условие выборки
+     */
     public static Specification<Organization> OrganizationBy(String id) {
         return new Specification<Organization>() {
             @Override
@@ -25,6 +32,12 @@ public class OrganizationSpecification {
         };
     }
 
+    /** Поиск организаций по параметрам
+     * @param name имя
+     * @param inn ИНН
+     * @param isActive признак активности
+     * @return условие выборки
+     */
     public static Specification<Organization> listBy(String name, String inn, String isActive) {
         return new Specification<Organization>() {
             @Override

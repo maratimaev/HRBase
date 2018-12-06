@@ -5,27 +5,45 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 
 /**
- * @author Marat Imaev (mailto:imaevmarat@outlook.com)
- * @since 01.12.2018
+ * Сущность, связанная с таблицей Office
  */
 @Entity
 @Table(name = "office")
 public class Office {
+    /**
+     * id офиса
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    /**
+     * Имя офиса
+     */
     @Column(nullable = false)
     private String name;
 
+    /**
+     * Адрес
+     */
     @Column(nullable = false)
     private String address;
 
+    /**
+     * Телефон
+     */
     private String phone;
 
+    /**
+     * Признак активности
+     */
     @Column(name = "is_active")
     private boolean isActive = true;
 
+    /**
+     * Название организации
+     * которой принадлежит офис
+     */
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "org_id")

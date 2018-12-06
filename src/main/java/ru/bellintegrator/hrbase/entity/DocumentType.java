@@ -1,22 +1,24 @@
 package ru.bellintegrator.hrbase.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Государство
+ * Тип документа, удостоверяющего личность сотрудника
  */
 @Entity
-@Table(name = "country")
-public class Country {
+@Table(name = "document_type")
+public class DocumentType {
     /**
-     * id страны
+     * id документа
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**
-     * Код страны
+     * Код документа
      */
     @Column(nullable = false)
     private String code;
@@ -27,7 +29,13 @@ public class Country {
     @Column(nullable = false)
     private String name;
 
-    public Country() {
+    /**
+     * Множество ссылающихся документов
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "document_type")
+    private Set<Document> documents = new HashSet<>();
+
+    public DocumentType() {
     }
     public int getId() {
         return id;
@@ -46,5 +54,13 @@ public class Country {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
     }
 }

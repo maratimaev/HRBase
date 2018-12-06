@@ -38,24 +38,24 @@ CREATE TABLE IF NOT EXISTS employer (
 ALTER TABLE employer ADD FOREIGN KEY (office_id) REFERENCES office(id);
 CREATE INDEX IX_employer_office_id ON employer (office_id);
 
-CREATE TABLE IF NOT EXISTS employer_document (
+CREATE TABLE IF NOT EXISTS document (
   id           INTEGER PRIMARY KEY AUTO_INCREMENT,
   type_id      INTEGER NOT NULL,
   number       VARCHAR (20) NOT NULL,
   date         DATE NOT NULL
 );
 
-ALTER TABLE employer ADD FOREIGN KEY (document_id) REFERENCES employer_document(id);
-CREATE INDEX IX_employer_document_id ON employer (document_id);
+ALTER TABLE employer ADD FOREIGN KEY (document_id) REFERENCES document(id);
+CREATE INDEX IX_document_id ON employer (document_id);
 
-CREATE TABLE IF NOT EXISTS document (
+CREATE TABLE IF NOT EXISTS document_type (
   id    INTEGER PRIMARY KEY AUTO_INCREMENT,
   code  VARCHAR (2) NOT NULL,
   name  VARCHAR (100) NOT NULL
 );
 
-ALTER TABLE employer_document ADD FOREIGN KEY (type_id) REFERENCES document(id);
-CREATE INDEX IX_employer_document_type_id ON employer_document (type_id);
+ALTER TABLE document ADD FOREIGN KEY (type_id) REFERENCES document_type(id);
+CREATE INDEX IX_document_type_id ON document (type_id);
 
 CREATE TABLE IF NOT EXISTS country (
   id    INTEGER PRIMARY KEY AUTO_INCREMENT,

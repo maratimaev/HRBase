@@ -1,50 +1,79 @@
 package ru.bellintegrator.hrbase.entity;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * @author Marat Imaev (mailto:imaevmarat@outlook.com)
- * @since 30.11.2018
+ * Сущность, связанная с таблицей employer
  */
 @Entity
 @Table(name = "employer")
 public class Employer {
+    /**
+     * id сотрудника
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    /**
+     * Офис сотрудника
+     */
     @OneToOne
     @JoinColumn(name = "office_id")
     private Office office;
 
+    /**
+     * Имя
+     */
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    /**
+     * Фамилия
+     */
     @Column(name = "last_name")
     private String lastName;
 
+    /**
+     * Отчество
+     */
     @Column(name = "middle_name")
     private String middleName;
 
+    /**
+     * Второе имя
+     */
     @Column(name = "second_name")
     private String secondName;
 
+    /**
+     * Должность
+     */
     @Column(nullable = false)
     private String position;
 
+    /**
+     * Телефон
+     */
     private String phone;
 
+    /**
+     * Удостоверение личности
+     */
     @OneToOne
     @JoinColumn(name = "document_id")
-    private EmployerDocument employerDocument;
+    private Document document;
 
+    /**
+     * Гражданство
+     */
     @OneToOne
     @JoinColumn(name = "citizenship_id")
     private Country citizenship;
 
+    /**
+     * Признак идентификации
+     */
     @Column(name = "is_identified")
     private boolean isIdentified = false;
 
@@ -104,11 +133,11 @@ public class Employer {
     public void setIdentified(boolean identified) {
         isIdentified = identified;
     }
-    public EmployerDocument getEmployerDocument() {
-        return employerDocument;
+    public Document getDocument() {
+        return document;
     }
-    public void setEmployerDocument(EmployerDocument employerDocument) {
-        this.employerDocument = employerDocument;
+    public void setDocument(Document document) {
+        this.document = document;
     }
     public Country getCitizenship() {
         return citizenship;
