@@ -1,55 +1,46 @@
 package ru.bellintegrator.hrbase.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.bellintegrator.hrbase.Exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.OutputProfile.OrganizationProfile;
+import ru.bellintegrator.hrbase.OutputProfile.WrapperProfile;
 import ru.bellintegrator.hrbase.entity.Organization;
+import ru.bellintegrator.hrbase.entity.Wrapper;
 import ru.bellintegrator.hrbase.repository.OrganizationRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author Marat Imaev (mailto:imaevmarat@outlook.com)
- * @since 02.12.2018
- */
 @RestController
 @RequestMapping(value = "/organization")
 public class OrganizationController {
     @Autowired
     private OrganizationRepository organizationRepository;
-    private OrganizationSpecification organizationSpecification;
 
-    @JsonView(OrganizationProfile.Full.class)
+    @JsonView(WrapperProfile.OrganizationFull.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    public Organization organizationById(@PathVariable String id) throws ThereIsNoSuchOrganization {
-        int i;
-        try {
-            i = Integer.parseInt(id);
-        } catch (Exception ex) {
+    public Wrapper<Organization> organizationById(@PathVariable String id) {
+        List<Organization> list = organizationRepository.findAll(OrganizationSpecification.OrganizationBy(id));
+        if(list.isEmpty()) {
             throw new ThereIsNoSuchOrganization();
         }
-        Optional<Organization> org = organizationRepository.findById(i);
-        if (!org.isPresent()) {
-            throw new ThereIsNoSuchOrganization();
-        }
-        return org.get();
+        return new Wrapper<>(list);
     }
 
-    @JsonView(OrganizationProfile.Full.class)
+    @JsonView(WrapperProfile.OrganizationShort.class)
     @RequestMapping(value = "/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Organization> organizationList(@RequestParam String name, @RequestParam String inn, @RequestParam String isActive){
-        List<Organization> organizations = organizationRepository.findAll(organizationSpecification.organizationList(name, inn, isActive));
-        return organizations;
+    public Wrapper<Organization> organizationList(@RequestParam(required = false) String name,
+                                                  @RequestParam(required = false) String inn,
+                                                  @RequestParam(required = false) String isActive){
+        List<Organization> list = organizationRepository.findAll(OrganizationSpecification.listBy(name, inn, isActive));
+        if(list.isEmpty()) {
+            throw new ThereIsNoSuchOrganization();
+        }
+        return new Wrapper<>(list);
     }
-
-//    @JsonView(OrganizationProfile.Full.class)
-//    @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Wrapper<Organization> organizationList() {
-//        return new Wrapper<>(organizationRepository.findAll());
-//    }
 
 }

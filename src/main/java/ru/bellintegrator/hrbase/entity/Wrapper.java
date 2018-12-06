@@ -1,5 +1,9 @@
 package ru.bellintegrator.hrbase.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import ru.bellintegrator.hrbase.OutputProfile.OrganizationProfile;
+import ru.bellintegrator.hrbase.OutputProfile.WrapperProfile;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +13,7 @@ import java.util.List;
  * @since 04.12.2018
  */
 public class Wrapper<T> {
+    @JsonView(WrapperProfile.Data.class)
     private List<T> data;
 
     public Wrapper() {
@@ -30,6 +35,4 @@ public class Wrapper<T> {
     public void setData(List<T> data) {
         this.data = data;
     }
-
-
 }

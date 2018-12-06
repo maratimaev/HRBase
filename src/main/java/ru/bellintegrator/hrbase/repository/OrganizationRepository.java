@@ -7,11 +7,6 @@ import ru.bellintegrator.hrbase.entity.Organization;
 
 import java.util.List;
 
-/**
- * @author Marat Imaev (mailto:imaevmarat@outlook.com)
- * @since 01.12.2018
- */
 public interface OrganizationRepository extends JpaRepository <Organization, Integer>, JpaSpecificationExecutor<Organization> {
-    public List<Organization> findOrganizationsByIsActiveTrue();
-    public List<Organization> findOrganizationsByName(String name);
+
 }
