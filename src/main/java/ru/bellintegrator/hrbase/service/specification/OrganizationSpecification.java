@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.controller;
+package ru.bellintegrator.hrbase.service.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;

@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;
-import ru.bellintegrator.hrbase.entity.Organization;
 import ru.bellintegrator.hrbase.entity.Wrapper;
-import ru.bellintegrator.hrbase.repository.OrganizationRepository;
+import ru.bellintegrator.hrbase.service.OrganizationService;
+import ru.bellintegrator.hrbase.view.OrganizationView;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ import java.util.List;
 @RequestMapping(value = "/organization")
 public class OrganizationController {
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private OrganizationService organizationService;
 
     /** Поиск организации по id
      * @param id организации
@@ -31,12 +30,8 @@ public class OrganizationController {
      */
     @JsonView(WrapperProfile.OrganizationFull.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Wrapper<Organization> organizationById(@PathVariable String id) {
-        List<Organization> list = organizationRepository.findAll(OrganizationSpecification.organizationBy(id));
-        if (list.isEmpty()) {
-            throw new ThereIsNoSuchOrganization();
-        }
-        return new Wrapper<>(list);
+    public Wrapper<OrganizationView> organizationById(@PathVariable String id) {
+        return organizationService.findOrganizationById(id);
     }
 
     /** Поиск организаций по параметрам
@@ -47,14 +42,10 @@ public class OrganizationController {
      */
     @JsonView(WrapperProfile.OrganizationShort.class)
     @RequestMapping(value = "/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Wrapper<Organization> organizationList(@RequestParam(required = false) String name,
+    public Wrapper<OrganizationView> getOrganizations(@RequestParam(required = false) String name,
                                                   @RequestParam(required = false) String inn,
                                                   @RequestParam(required = false) String isActive) {
-        List<Organization> list = organizationRepository.findAll(OrganizationSpecification.listBy(name, inn, isActive));
-        if (list.isEmpty()) {
-            throw new ThereIsNoSuchOrganization();
-        }
-        return new Wrapper<>(list);
+        return organizationService.getOrganizations(name, inn, isActive);
     }
 
 }

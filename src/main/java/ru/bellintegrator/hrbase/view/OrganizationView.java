@@ -1,78 +1,77 @@
-package ru.bellintegrator.hrbase.entity;
+package ru.bellintegrator.hrbase.view;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonView;
+import ru.bellintegrator.hrbase.profile.OrganizationProfile;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
- * Сущность, связанная с таблицей Organization
+ * Отображение даанных организации
  */
-@Entity
-@Table(name = "organization")
-public class Organization {
+public class OrganizationView {
     /**
      * id организации
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(OrganizationProfile.Short.class)
+    @NotNull(message = "id cannot be null")
     private int id;
 
     /**
      * Имя организации
      */
-    @Column(length = 50, nullable = false)
+    @JsonView(OrganizationProfile.Short.class)
+    @NotEmpty
+    @Size(max = 50)
     private String name;
 
     /**
      * Полное имя организации
      */
-    @Column(name = "full_name", length = 100, nullable = false)
+    @JsonView(OrganizationProfile.Full.class)
+    @NotEmpty
+    @Size(max = 100)
     private String fullName;
 
     /**
      * Инн организации
      */
-    @Column(length = 12, nullable = false)
+    @JsonView(OrganizationProfile.Full.class)
+    @NotEmpty
+    @Size(max = 12)
     private String inn;
 
     /**
      * КПП организации
      */
-    @Column(length = 9, nullable = false)
+    @JsonView(OrganizationProfile.Full.class)
+    @NotEmpty
+    @Size(max = 9)
     private String kpp;
 
     /**
      * Адрес
      */
-    @Column(length = 200, nullable = false)
+    @JsonView(OrganizationProfile.Full.class)
+    @NotEmpty
+    @Size(max = 200)
     private String address;
 
     /**
      * Телефон
      */
-    @Column(length = 20)
+    @JsonView(OrganizationProfile.Full.class)
+    @Size(max = 20)
     private String phone;
 
     /**
      * Признак активности
      */
-    @Column(name = "is_active")
+    @JsonView(OrganizationProfile.Short.class)
     private boolean isActive = false;
 
-    /**
-     * Список офисов организации
-     */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organization")
-    private Set<Office> offices = new HashSet<>();
-
-    public Organization() {
+    public OrganizationView() {
     }
     public int getId() {
         return id;
@@ -121,11 +120,5 @@ public class Organization {
     }
     public void setActive(boolean active) {
         isActive = active;
-    }
-    public Set<Office> getOffices() {
-        return offices;
-    }
-    public void setOffices(Set<Office> offices) {
-        this.offices = offices;
     }
 }
