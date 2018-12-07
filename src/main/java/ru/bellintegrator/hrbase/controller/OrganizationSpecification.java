@@ -4,7 +4,10 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.entity.Organization;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +20,7 @@ public class OrganizationSpecification {
      * @param id организации
      * @return условие выборки
      */
-    public static Specification<Organization> OrganizationBy(String id) {
+    public static Specification<Organization> organizationBy(String id) {
         return new Specification<Organization>() {
             @Override
             public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -43,20 +46,19 @@ public class OrganizationSpecification {
             @Override
             public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
-                if(name == null) {
+                if (name == null) {
                     throw new ThereIsNoSuchOrganization();
                 }
                 predicates.add(cb.equal(root.get("name"), name));
                 try {
-                    if(inn != null) {
+                    if (inn != null) {
                         predicates.add(cb.equal(root.get("inn"), Integer.parseInt(inn)));
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     throw new ThereIsNoSuchOrganization();
                 }
-                if(isActive != null) {
-                    if(!(isActive.equalsIgnoreCase("true") || isActive.equalsIgnoreCase("false")))
-                    {
+                if (isActive != null) {
+                    if (!(isActive.equalsIgnoreCase("true") || isActive.equalsIgnoreCase("false"))) {
                         throw new ThereIsNoSuchOrganization();
                     }
                     predicates.add(cb.equal(root.get("isActive"), Boolean.parseBoolean(isActive)));

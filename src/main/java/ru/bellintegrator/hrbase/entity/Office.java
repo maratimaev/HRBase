@@ -2,7 +2,15 @@ package ru.bellintegrator.hrbase.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 
 /**
  * Сущность, связанная с таблицей Office
@@ -20,18 +28,19 @@ public class Office {
     /**
      * Имя офиса
      */
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
     /**
      * Адрес
      */
-    @Column(nullable = false)
+    @Column(length = 200, nullable = false)
     private String address;
 
     /**
      * Телефон
      */
+    @Column(length = 20)
     private String phone;
 
     /**

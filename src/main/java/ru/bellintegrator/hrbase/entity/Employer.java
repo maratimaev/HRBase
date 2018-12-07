@@ -1,6 +1,13 @@
 package ru.bellintegrator.hrbase.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Сущность, связанная с таблицей employer
@@ -16,7 +23,7 @@ public class Employer {
     private int id;
 
     /**
-     * Офис сотрудника
+     * Оффис сотрудника
      */
     @OneToOne
     @JoinColumn(name = "office_id")
@@ -25,50 +32,51 @@ public class Employer {
     /**
      * Имя
      */
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", length = 50, nullable = false)
     private String firstName;
 
     /**
      * Фамилия
      */
-    @Column(name = "last_name")
+    @Column(name = "last_name", length = 50)
     private String lastName;
 
     /**
      * Отчество
      */
-    @Column(name = "middle_name")
+    @Column(name = "middle_name", length = 50)
     private String middleName;
 
     /**
      * Второе имя
      */
-    @Column(name = "second_name")
+    @Column(name = "second_name", length = 50)
     private String secondName;
 
     /**
      * Должность
      */
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String position;
 
     /**
      * Телефон
      */
+    @Column(length = 50)
     private String phone;
 
     /**
-     * Удостоверение личности
+     * Документ, удостоверяющий личность
      */
     @OneToOne
-    @JoinColumn(name = "document_id")
+    @JoinColumn(name = "document_id", nullable = false)
     private Document document;
 
     /**
      * Гражданство
      */
     @OneToOne
-    @JoinColumn(name = "citizenship_id")
+    @JoinColumn(name = "citizenship_id", nullable = false)
     private Country citizenship;
 
     /**
@@ -133,17 +141,16 @@ public class Employer {
     public void setIdentified(boolean identified) {
         isIdentified = identified;
     }
-    public Document getDocument() {
-        return document;
-    }
-    public void setDocument(Document document) {
-        this.document = document;
-    }
     public Country getCitizenship() {
         return citizenship;
     }
     public void setCitizenship(Country citizenship) {
         this.citizenship = citizenship;
     }
-
+    public Document getDocument() {
+        return document;
+    }
+    public void setDocument(Document document) {
+        this.document = document;
+    }
 }

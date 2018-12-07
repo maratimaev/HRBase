@@ -7,5 +7,5 @@ import ru.bellintegrator.hrbase.entity.Organization;
 /**
  * Репозиторий методов для работы с БД
  */
-public interface OrganizationRepository extends JpaRepository <Organization, Integer>, JpaSpecificationExecutor<Organization> {
+public interface OrganizationRepository extends JpaRepository<Organization, Integer>, JpaSpecificationExecutor<Organization> {
 }

@@ -1,9 +1,14 @@
 package ru.bellintegrator.hrbase.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * Государство
+ * Сущность, связанная с таблицей country
  */
 @Entity
 @Table(name = "country")
@@ -18,13 +23,13 @@ public class Country {
     /**
      * Код страны
      */
-    @Column(nullable = false)
+    @Column(length = 3, nullable = false)
     private String code;
 
     /**
      * Название
      */
-    @Column(nullable = false)
+    @Column(length = 100, nullable = false)
     private String name;
 
     public Country() {

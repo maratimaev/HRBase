@@ -10,7 +10,7 @@ public interface OrganizationProfile {
      *  inn
      *  isActive
      */
-    interface Short {}
+    interface Short { }
 
     /**
      * Расширенный вид, поля
@@ -23,5 +23,5 @@ public interface OrganizationProfile {
      *   phone
      *   isActive
      */
-    interface Full extends Short {}
+    interface Full extends Short { }
 }

@@ -7,15 +7,15 @@ public interface WrapperProfile {
     /**
      * JsonView для всех отправляемых данных
      */
-    interface Data {}
+    interface Data { }
 
     /**
      * {@inheritDoc}
      */
-    interface OrganizationShort extends Data, OrganizationProfile.Short {}
+    interface OrganizationShort extends Data, OrganizationProfile.Short { }
 
     /**
      * {@inheritDoc}
      */
-    interface OrganizationFull extends Data, OrganizationProfile.Full {}
+    interface OrganizationFull extends Data, OrganizationProfile.Full { }
 }

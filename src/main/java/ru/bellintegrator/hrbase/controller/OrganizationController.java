@@ -3,7 +3,11 @@ package ru.bellintegrator.hrbase.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;
 import ru.bellintegrator.hrbase.entity.Organization;
@@ -26,10 +30,10 @@ public class OrganizationController {
      * @return список организаций внутри Wrapper
      */
     @JsonView(WrapperProfile.OrganizationFull.class)
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Wrapper<Organization> organizationById(@PathVariable String id) {
-        List<Organization> list = organizationRepository.findAll(OrganizationSpecification.OrganizationBy(id));
-        if(list.isEmpty()) {
+        List<Organization> list = organizationRepository.findAll(OrganizationSpecification.organizationBy(id));
+        if (list.isEmpty()) {
             throw new ThereIsNoSuchOrganization();
         }
         return new Wrapper<>(list);
@@ -45,9 +49,9 @@ public class OrganizationController {
     @RequestMapping(value = "/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public Wrapper<Organization> organizationList(@RequestParam(required = false) String name,
                                                   @RequestParam(required = false) String inn,
-                                                  @RequestParam(required = false) String isActive){
+                                                  @RequestParam(required = false) String isActive) {
         List<Organization> list = organizationRepository.findAll(OrganizationSpecification.listBy(name, inn, isActive));
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             throw new ThereIsNoSuchOrganization();
         }
         return new Wrapper<>(list);

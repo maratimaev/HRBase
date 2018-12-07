@@ -1,38 +1,45 @@
 package ru.bellintegrator.hrbase.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Тип документа, удостоверяющего личность сотрудника
+ * Сущность, связанная с таблицей document_type
  */
 @Entity
 @Table(name = "document_type")
 public class DocumentType {
     /**
-     * id документа
+     * id типа документа
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**
-     * Код документа
+     * Код типа документа
      */
-    @Column(nullable = false)
+    @Column(length = 2, nullable = false)
     private String code;
 
     /**
-     * Название
+     * Название типа документа
      */
-    @Column(nullable = false)
+    @Column(length = 100, nullable = false)
     private String name;
 
     /**
-     * Множество ссылающихся документов
+     * Список документов одного типа, связанный с таблицей document
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "document_type")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "documentType")
     private Set<Document> documents = new HashSet<>();
 
     public DocumentType() {
@@ -55,11 +62,9 @@ public class DocumentType {
     public void setName(String name) {
         this.name = name;
     }
-
     public Set<Document> getDocuments() {
         return documents;
     }
-
     public void setDocuments(Set<Document> documents) {
         this.documents = documents;
     }

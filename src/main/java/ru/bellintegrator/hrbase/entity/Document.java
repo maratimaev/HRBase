@@ -1,16 +1,23 @@
 package ru.bellintegrator.hrbase.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * Документ сотрудника
+ * Сущность, связанная с таблицей document
  */
 @Entity
 @Table(name = "document")
 public class Document {
     /**
-     * Id документа
+     * id документа
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,17 +27,17 @@ public class Document {
      * Тип документа
      */
     @ManyToOne
-    @JoinColumn(name = "type_id")
+    @JoinColumn(name = "type_id", nullable = false)
     private DocumentType documentType;
 
     /**
      * Номер документа
      */
-    @Column(nullable = false)
+    @Column(length = 20, nullable = false)
     private String number;
 
     /**
-     * Дата выдачи
+     * Дата выдачи документа
      */
     @Column(nullable = false)
     private Date date;
@@ -55,11 +62,9 @@ public class Document {
     public void setDate(Date date) {
         this.date = date;
     }
-
     public DocumentType getDocumentType() {
         return documentType;
     }
-
     public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
     }

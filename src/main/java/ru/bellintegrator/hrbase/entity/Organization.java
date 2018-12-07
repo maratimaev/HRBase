@@ -4,7 +4,14 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import ru.bellintegrator.hrbase.profile.OrganizationProfile;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,41 +33,42 @@ public class Organization {
      * Имя организации
      */
     @JsonView(OrganizationProfile.Short.class)
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
     /**
      * Полное имя организации
      */
     @JsonView(OrganizationProfile.Full.class)
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name", length = 100, nullable = false)
     private String fullName;
 
     /**
      * Инн организации
      */
     @JsonView(OrganizationProfile.Full.class)
-    @Column(nullable = false)
+    @Column(length = 12, nullable = false)
     private String inn;
 
     /**
      * КПП организации
      */
     @JsonView(OrganizationProfile.Full.class)
-    @Column(nullable = false)
+    @Column(length = 9, nullable = false)
     private String kpp;
 
     /**
      * Адрес
      */
     @JsonView(OrganizationProfile.Full.class)
-    @Column(nullable = false)
+    @Column(length = 200, nullable = false)
     private String address;
 
     /**
      * Телефон
      */
     @JsonView(OrganizationProfile.Full.class)
+    @Column(length = 20)
     private String phone;
 
     /**
