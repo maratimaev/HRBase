@@ -25,4 +25,9 @@ public interface OrganizationService {
      * @param organizationView входящий объект json
      */
     void saveOrganization(OrganizationView organizationView);
+
+    /** Изменение данных организации
+     * @param organizationView объеккт json
+     */
+    void updateOrganization(OrganizationView organizationView);
 }

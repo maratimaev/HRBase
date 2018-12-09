@@ -11,6 +11,7 @@ import ru.bellintegrator.hrbase.repository.OrganizationRepository;
 import ru.bellintegrator.hrbase.view.OrganizationView;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * {@inheritDoc}
@@ -58,5 +59,14 @@ public class OrganizationServiceImpl implements OrganizationService{
     @Override
     public void saveOrganization(OrganizationView organizationView) {
         organizationRepository.saveAndFlush(mapperFacade.map(organizationView, Organization.class));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateOrganization(OrganizationView organizationView) {
+        Optional<Organization> optional = organizationRepository.findById(organizationView.getId());
+        optional.ifPresent(organization -> organizationRepository.saveAndFlush(organization));
     }
 }
