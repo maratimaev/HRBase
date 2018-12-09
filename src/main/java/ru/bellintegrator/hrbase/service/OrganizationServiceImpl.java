@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 
 @Service
-public class OrganizationServiceImpl implements OrganizationService{
+public class OrganizationServiceImpl implements OrganizationService {
 
     private OrganizationRepository organizationRepository;
     private MapperFacade mapperFacade;

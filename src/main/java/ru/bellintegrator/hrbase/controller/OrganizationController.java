@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;
-import ru.bellintegrator.hrbase.view.ResponseStatus.Error;
-import ru.bellintegrator.hrbase.view.ResponseStatus.Result;
+import ru.bellintegrator.hrbase.view.status.Error;
+import ru.bellintegrator.hrbase.view.status.Result;
 import ru.bellintegrator.hrbase.view.Wrapper;
 import ru.bellintegrator.hrbase.service.OrganizationService;
 import ru.bellintegrator.hrbase.view.OrganizationView;
-import ru.bellintegrator.hrbase.view.ResponseStatus.Success;
+import ru.bellintegrator.hrbase.view.status.Success;
 
 import javax.validation.Valid;
 

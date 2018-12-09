@@ -1,7 +1,8 @@
-package ru.bellintegrator.hrbase.view.ResponseStatus;
+package ru.bellintegrator.hrbase.view.status;
 
-import ru.bellintegrator.hrbase.view.ResponseStatus.Result;
-
+/**
+ * Возвращение сообщения об успешности операции
+ */
 public class Success implements Result {
     private String result;
 
