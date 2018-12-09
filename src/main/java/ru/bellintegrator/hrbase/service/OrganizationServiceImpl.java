@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.bellintegrator.hrbase.entity.mapper.MapperFacade;
 import ru.bellintegrator.hrbase.service.specification.OrganizationSpecification;
 import ru.bellintegrator.hrbase.entity.Organization;
-import ru.bellintegrator.hrbase.entity.Wrapper;
+import ru.bellintegrator.hrbase.view.Wrapper;
 import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.repository.OrganizationRepository;
 import ru.bellintegrator.hrbase.view.OrganizationView;
@@ -50,5 +50,13 @@ public class OrganizationServiceImpl implements OrganizationService{
             throw new ThereIsNoSuchOrganization();
         }
         return new Wrapper<>(mapperFacade.mapAsList(list, OrganizationView.class));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveOrganization(OrganizationView organizationView) {
+        organizationRepository.saveAndFlush(mapperFacade.map(organizationView, Organization.class));
     }
 }

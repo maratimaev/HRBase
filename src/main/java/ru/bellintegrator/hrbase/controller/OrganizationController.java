@@ -3,17 +3,18 @@ package ru.bellintegrator.hrbase.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;
-import ru.bellintegrator.hrbase.entity.Wrapper;
+import ru.bellintegrator.hrbase.view.Wrapper;
 import ru.bellintegrator.hrbase.service.OrganizationService;
 import ru.bellintegrator.hrbase.view.OrganizationView;
-
-import java.util.List;
+import ru.bellintegrator.hrbase.view.ResultResponse;
 
 /**
  * Контроллеры для работы с организациями
@@ -29,7 +30,7 @@ public class OrganizationController {
      * @return список организаций внутри Wrapper
      */
     @JsonView(WrapperProfile.OrganizationFull.class)
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Wrapper<OrganizationView> organizationById(@PathVariable String id) {
         return organizationService.findOrganizationById(id);
     }
@@ -41,11 +42,21 @@ public class OrganizationController {
      * @return список организаций внутри Wrapper
      */
     @JsonView(WrapperProfile.OrganizationShort.class)
-    @RequestMapping(value = "/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("list")
     public Wrapper<OrganizationView> getOrganizations(@RequestParam(required = false) String name,
-                                                  @RequestParam(required = false) String inn,
-                                                  @RequestParam(required = false) String isActive) {
+                                                      @RequestParam(required = false) String inn,
+                                                      @RequestParam(required = false) String isActive) {
         return organizationService.getOrganizations(name, inn, isActive);
+    }
+
+    /** Сохранение новой организации в БД
+     * @param organizationView объект json
+     * @return в случае успеха
+     */
+    @PostMapping("save")
+    public ResultResponse saveOrganization(@RequestBody OrganizationView organizationView) {
+        organizationService.saveOrganization(organizationView);
+        return new ResultResponse("success");
     }
 
 }

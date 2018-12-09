@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.entity;
+package ru.bellintegrator.hrbase.view;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;

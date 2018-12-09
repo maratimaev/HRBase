@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import ru.bellintegrator.hrbase.profile.OrganizationProfile;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -15,7 +14,6 @@ public class OrganizationView {
      * id организации
      */
     @JsonView(OrganizationProfile.Short.class)
-    @NotNull(message = "id cannot be null")
     private int id;
 
     /**

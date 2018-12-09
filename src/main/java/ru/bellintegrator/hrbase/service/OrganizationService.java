@@ -1,6 +1,6 @@
 package ru.bellintegrator.hrbase.service;
 
-import ru.bellintegrator.hrbase.entity.Wrapper;
+import ru.bellintegrator.hrbase.view.Wrapper;
 import ru.bellintegrator.hrbase.view.OrganizationView;
 
 /**
@@ -20,4 +20,9 @@ public interface OrganizationService {
      * @return обертка над view
      */
     Wrapper<OrganizationView> getOrganizations(String name, String inn, String isActive);
+
+    /** Сохранение новой организации в БД
+     * @param organizationView входящий объект json
+     */
+    void saveOrganization(OrganizationView organizationView);
 }
