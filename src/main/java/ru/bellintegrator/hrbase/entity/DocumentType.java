@@ -36,21 +36,8 @@ public class DocumentType {
     @Column(length = 100, nullable = false)
     private String name;
 
-    /**
-     * Список документов одного типа, связанный с таблицей document
-     */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "documentType")
-    private Set<Document> documents = new HashSet<>();
-
-    public DocumentType() {
-    }
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getCode() {
@@ -67,11 +54,5 @@ public class DocumentType {
 
     public void setName(String name) {
         this.name = name;
-    }
-    public Set<Document> getDocuments() {
-        return documents;
-    }
-    public void setDocuments(Set<Document> documents) {
-        this.documents = documents;
     }
 }

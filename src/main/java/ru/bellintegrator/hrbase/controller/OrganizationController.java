@@ -60,9 +60,9 @@ public class OrganizationController {
      */
     @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Result saveOrganization(@RequestBody @Valid OrganizationView organizationView, BindingResult bindingResult) {
-        Result result = new Success("success");
+        Result result = new Success();
         if (bindingResult.hasErrors()) {
-            result = new Error(bindingResult.toString());
+            result = new Error("wrong validation of required fields: name, fullName, inn, kpp, address");
         } else {
             organizationService.saveOrganization(organizationView);
         }
@@ -77,13 +77,13 @@ public class OrganizationController {
     @PostMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Result updateOrganization(@RequestBody @Valid OrganizationView organizationView, BindingResult bindingResult) {
         Boolean viewValid = true;
-        Result result = new Success("success");
+        Result result = new Success();
         if (organizationView.getId() <= 0) {
             result = new Error("wrong organization ID");
             viewValid = false;
         }
         if (bindingResult.hasErrors()) {
-            result = new Error(bindingResult.toString());
+            result = new Error("wrong validation of required fields: id, name, fullName, inn, kpp, address");
             viewValid = false;
         }
         if (viewValid) {

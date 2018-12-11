@@ -85,71 +85,86 @@ public class Employer {
     @Column(name = "is_identified")
     private boolean isIdentified = false;
 
-    public Employer() {
-    }
     public int getId() {
         return id;
     }
-    public void setId(int id) {
-        this.id = id;
-    }
+
     public Office getOffice() {
         return office;
     }
+
     public void setOffice(Office office) {
         this.office = office;
     }
+
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
     public String getLastName() {
         return lastName;
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
     public String getMiddleName() {
         return middleName;
     }
+
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
     }
+
     public String getSecondName() {
         return secondName;
     }
+
     public void setSecondName(String secondName) {
         this.secondName = secondName;
     }
+
     public String getPosition() {
         return position;
     }
+
     public void setPosition(String position) {
         this.position = position;
     }
+
     public String getPhone() {
         return phone;
     }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public boolean isIdentified() {
         return isIdentified;
     }
+
     public void setIdentified(boolean identified) {
         isIdentified = identified;
     }
+
     public Country getCitizenship() {
         return citizenship;
     }
+
     public void setCitizenship(Country citizenship) {
         this.citizenship = citizenship;
     }
+
     public Document getDocument() {
         return document;
     }
+
     public void setDocument(Document document) {
         this.document = document;
     }

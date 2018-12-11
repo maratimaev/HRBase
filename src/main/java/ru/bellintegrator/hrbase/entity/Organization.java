@@ -72,13 +72,8 @@ public class Organization {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organization")
     private Set<Office> offices = new HashSet<>();
 
-    public Organization() {
-    }
     public int getId() {
         return id;
-    }
-    public void setId(int id) {
-        this.id = id;
     }
     public String getName() {
         return name;

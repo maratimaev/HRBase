@@ -42,29 +42,30 @@ public class Document {
     @Column(nullable = false)
     private Date date;
 
-    public Document() {
-    }
     public int getId() {
         return id;
     }
-    public void setId(int id) {
-        this.id = id;
-    }
+
     public String getNumber() {
         return number;
     }
+
     public void setNumber(String number) {
         this.number = number;
     }
+
     public Date getDate() {
         return date;
     }
+
     public void setDate(Date date) {
         this.date = date;
     }
+
     public DocumentType getDocumentType() {
         return documentType;
     }
+
     public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
     }
