@@ -69,6 +69,18 @@ public class OrganizationView {
     @JsonView(OrganizationProfile.Short.class)
     private boolean isActive = false;
 
+    public OrganizationView() {
+    }
+
+    public OrganizationView(int id, @NotEmpty @Size(max = 50) String name, @NotEmpty @Size(max = 100) String fullName, @NotEmpty @Size(max = 12) String inn, @NotEmpty @Size(max = 9) String kpp, @NotEmpty @Size(max = 200) String address) {
+        this.id = id;
+        this.name = name;
+        this.fullName = fullName;
+        this.inn = inn;
+        this.kpp = kpp;
+        this.address = address;
+    }
+
     public int getId() {
         return id;
     }
