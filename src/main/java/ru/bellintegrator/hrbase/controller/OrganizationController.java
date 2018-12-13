@@ -1,6 +1,8 @@
 package ru.bellintegrator.hrbase.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
@@ -27,6 +29,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/organization")
 public class OrganizationController {
+    private static final Logger log = LoggerFactory.getLogger(OrganizationController.class.getName());
+
     @Autowired
     private OrganizationService organizationService;
 
@@ -37,6 +41,7 @@ public class OrganizationController {
     @JsonView(WrapperProfile.OrganizationFull.class)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Wrapper<OrganizationView> organizationById(@PathVariable String id) {
+        log.info(String.format("Find organization by id=%s", id));
         return organizationService.findOrganizationById(id);
     }
 
@@ -51,6 +56,7 @@ public class OrganizationController {
     public Wrapper<OrganizationView> getOrganizations(@RequestParam(required = false) String name,
                                                       @RequestParam(required = false) String inn,
                                                       @RequestParam(required = false) String isActive) {
+        log.info(String.format("Get list of organizations by name=%s, inn=%s, isActive=%s", name, inn, isActive));
         return organizationService.getOrganizations(name, inn, isActive);
     }
 
@@ -62,8 +68,10 @@ public class OrganizationController {
     public Result saveOrganization(@RequestBody @Valid OrganizationView organizationView, BindingResult bindingResult) {
         Result result = new Success();
         if (bindingResult.hasErrors()) {
+            log.error(String.format("Can't save organization : \n %s", bindingResult.toString()));
             result = new Error("wrong validation of required fields: name, fullName, inn, kpp, address");
         } else {
+            log.info(String.format("Save organization with fields \n %s", organizationView.toString()));
             organizationService.saveOrganization(organizationView);
         }
         return result;
@@ -79,15 +87,18 @@ public class OrganizationController {
         Boolean viewValid = true;
         Result result = new Success();
         if (organizationView.getId() <= 0) {
+            log.error(String.format("Can't update organization by negative id=%s", organizationView.getId()));
             result = new Error("wrong organization ID");
             viewValid = false;
         }
         if (bindingResult.hasErrors()) {
+            log.error(String.format("Can't update organization : \n %s", bindingResult.toString()));
             result = new Error("wrong validation of required fields: id, name, fullName, inn, kpp, address");
             viewValid = false;
         }
         if (viewValid) {
-            organizationService.saveOrganization(organizationView);
+            log.info(String.format("Update organization with fields \n %s", organizationView.toString()));
+            organizationService.updateOrganization(organizationView);
         }
         return result;
     }
