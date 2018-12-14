@@ -52,18 +52,16 @@ public class OrganizationSpecification {
             public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (name == null) {
-                    log.error(String.format("There is no field to find organization name:%s", name));
+                    log.error(String.format("There is no field to find organization (name):%s", name));
                     throw new ThereIsNoSuchOrganization();
                 }
                 predicates.add(cb.equal(root.get("name"), name));
-                try {
-                    if (inn != null) {
-                        predicates.add(cb.equal(root.get("inn"), Integer.parseInt(inn)));
-                    }
-                } catch (Exception e) {
-                    log.error(String.format("Error parsing %s to int \n Exception: %s", inn, e));
+                if (inn == null) {
+                    log.error(String.format("There is no field to find organization (inn):%s", inn));
                     throw new ThereIsNoSuchOrganization();
                 }
+                predicates.add(cb.equal(root.get("inn"), inn));
+
                 if (isActive != null) {
                     if (!(isActive.equalsIgnoreCase("true") || isActive.equalsIgnoreCase("false"))) {
                         log.error(String.format("There is wrong field to find organization isActive:%s", isActive));

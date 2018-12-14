@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,7 +70,8 @@ public class OrganizationController {
         Result result = new Success();
         if (bindingResult.hasErrors()) {
             log.error(String.format("Can't save organization : \n %s", bindingResult.toString()));
-            result = new Error("wrong validation of required fields: name, fullName, inn, kpp, address");
+            FieldError error = bindingResult.getFieldErrors().get(0);
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(),error.getRejectedValue()));
         } else {
             log.info(String.format("Save organization with fields \n %s", organizationView.toString()));
             organizationService.saveOrganization(organizationView);
@@ -93,7 +95,8 @@ public class OrganizationController {
         }
         if (bindingResult.hasErrors()) {
             log.error(String.format("Can't update organization : \n %s", bindingResult.toString()));
-            result = new Error("wrong validation of required fields: id, name, fullName, inn, kpp, address");
+            FieldError error = bindingResult.getFieldErrors().get(0);
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(),error.getRejectedValue()));
             viewValid = false;
         }
         if (viewValid) {

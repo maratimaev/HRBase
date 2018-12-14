@@ -77,7 +77,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         Optional<Organization> optional = organizationRepository.findById(organizationView.getId());
         log.info(String.format("Find organization for updating \n %s \n result: %s", organizationView.toString(), optional));
         if(optional.isPresent()){
-            organizationRepository.saveAndFlush(mapperFacade.map(organizationView, Organization.class));
+            Organization organization = optional.get();
+            organization = mapperFacade.map(organizationView, Organization.class);
+            organizationRepository.saveAndFlush(organization);
         }
     }
 }
