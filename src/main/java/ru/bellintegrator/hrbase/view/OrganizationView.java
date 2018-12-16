@@ -5,6 +5,7 @@ import ru.bellintegrator.hrbase.profile.OrganizationProfile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.text.Format;
 
 /**
  * Отображение даанных организации
@@ -143,19 +144,5 @@ public class OrganizationView {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationView{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", inn='" + inn + '\'' +
-                ", kpp='" + kpp + '\'' +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                ", isActive=" + isActive +
-                '}';
     }
 }

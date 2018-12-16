@@ -1,7 +1,19 @@
 package ru.bellintegrator.hrbase.controller;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import ru.bellintegrator.hrbase.view.OrganizationView;
+
+import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -9,36 +21,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import static org.hamcrest.core.Is.is;
-
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;
-import ru.bellintegrator.hrbase.service.OrganizationService;
-import ru.bellintegrator.hrbase.view.OrganizationView;
-import ru.bellintegrator.hrbase.view.Wrapper;
-
+/**
+ * Интеграционные тесты работы с Organization
+ */
 @RunWith(SpringRunner.class)
-@WebMvcTest(OrganizationController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 @DirtiesContext
-public class OrganizationControllerTest {
+public class OrganizationIntegrityTest {
+
+    /**
+     * Внедрение объекта для работы с mock
+     */
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private OrganizationService service;
-
+    /**
+     * Внедрение объекта-примера organizationView
+     */
     private OrganizationView organizationView;
 
+    /**
+     * Инициализация organizationView тестовыми данными
+     */
     @Before
     public void setUp() {
         this.organizationView = new OrganizationView(0,
@@ -50,47 +55,51 @@ public class OrganizationControllerTest {
         );
     }
 
+    /** Проверка поиска организации по id
+     * @throws Exception
+     */
     @Test
     public void whenGetOrganizationByExistingIdThenCheckJsonData() throws Exception {
-        Wrapper<OrganizationView> wrapper = new Wrapper<>(organizationView);
-        when(service.findOrganizationById("1")).thenReturn(wrapper);
-
         this.mockMvc.perform(get("/organization/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.data[0].id", is(0)))
+                .andExpect(jsonPath("$.data[0].id", is(1)))
                 .andExpect(jsonPath("$.data[0].name", is("ООО «Пример»")))
                 .andExpect(jsonPath("$.data[0].fullName", is("Общество с ограниченной ответственностью «Пример»")))
                 .andExpect(jsonPath("$.data[0].inn", is("1234567891")))
                 .andExpect(jsonPath("$.data[0].kpp", is("123456789")));
     }
 
+    /** Проверка генерации ошибки при поиске несуществующей организации
+     * @throws Exception
+     */
     @Test
     public void whenGetOrganizationByFakeIdThenCheck500() throws Exception {
-        when(service.findOrganizationById("10")).thenThrow(ThereIsNoSuchOrganization.class);
         this.mockMvc.perform(get("/organization/{id}", 10))
                 .andExpect(status().isInternalServerError());
     }
 
+    /** Проверка поиска организации по имени, инн, признаку активности
+     * @throws Exception
+     */
     @Test
     public void whenGetOrganizationListThenCheckJsonData() throws Exception {
-        Wrapper<OrganizationView> wrapper = new Wrapper<>(organizationView);
-        when(service.getOrganizations("ООО «Пример»", "1234567891", "false")).thenReturn(wrapper);
-
         this.mockMvc.perform(post("/organization/list")
                 .param("name", "ООО «Пример»")
                 .param("inn", "1234567891")
                 .param("isActive", "false")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].id", is(0)))
+                .andExpect(jsonPath("$.data[0].id", is(1)))
                 .andExpect(jsonPath("$.data[0].name", is("ООО «Пример»")))
                 .andExpect(jsonPath("$.data[0].isActive", is(false)));
     }
 
+    /** Проверка генерации ошибки при поиске организации без указания имени
+     * @throws Exception
+     */
     @Test
     public void whenGetOrganizationListByFakeNameThenCheck500() throws Exception {
-        when(service.getOrganizations("ООО «Error»", "1234567891", "false")).thenThrow(ThereIsNoSuchOrganization.class);
         this.mockMvc.perform(post("/organization/list")
                 .param("name", "ООО «Error»")
                 .param("inn", "1234567891")
@@ -101,27 +110,26 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.error", is("There is no such organization")));
     }
 
+    /** Проверка сохранения новой организации
+     * @throws Exception
+     */
     @Test
     public void whenSaveOrganizationThenCheckSuccess() throws Exception {
-        this.organizationView.setName("ООО «New»");
-        doNothing().when(service).saveOrganization(organizationView);
-
-        this.mockMvc.perform(post("/organization/save")
+               this.mockMvc.perform(post("/organization/save")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(asJsonString(organizationView)))
+                .content(asJsonString(this.organizationView)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is("success")));
     }
 
+    /** Проверка генерации ошибки при сохранении организации без указания имени
+     * @throws Exception
+     */
     @Test
     public void whenSaveOrganizationWithoutNameThenCheckError() throws Exception {
-        String inputJson = new StringBuilder()
-                .append("{\"fullName\":\"Общество с ограниченной ответственностью «Пример»\",")
-                .append("\"inn\":\"1234567891\",")
-                .append("\"kpp\":\"123456789\",")
-                .append("\"address\":\"124365 г.Москва, ул. Ленина, д.1, корп.1, офис 1\"}")
-                .toString();
+        this.organizationView.setName(null);
+        String inputJson = asJsonString(this.organizationView);
 
         this.mockMvc.perform(post("/organization/save")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -131,6 +139,9 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.error", is("Field (name) can't be: null")));
     }
 
+    /** Проверка генерации ошибки при сохранении организации без заполнения всех полей
+     * @throws Exception
+     */
     @Test
     public void whenSaveOrganizationWithoutAnyFieldsThenCheck4xx() throws Exception {
         this.mockMvc.perform(post("/organization/save")
@@ -139,13 +150,16 @@ public class OrganizationControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
+    /** Проверка обновления полей организации
+     * @throws Exception
+     */
     @Test
     public void whenUpdateOrganizationThenCheckSuccess() throws Exception {
+        this.organizationView.setId(2);
         this.organizationView.setName("ООО «New»");
         this.organizationView.setFullName("Общество с ограниченной ответственностью «New»");
-        doNothing().when(service).updateOrganization(organizationView);
 
-        this.mockMvc.perform(post("/organization/save")
+        this.mockMvc.perform(post("/organization/update")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(asJsonString(organizationView)))
                 .andDo(print())
@@ -153,15 +167,13 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.result", is("success")));
     }
 
+    /** Проверка генерации ошибки при обновлении полей организации без указания инн
+     * @throws Exception
+     */
     @Test
     public void whenUpdateOrganizationWithoutInnThenCheckError() throws Exception {
-        String inputJson = new StringBuilder()
-                .append("{\"id\":0,")
-                .append("\"fullName\":\"Общество с ограниченной ответственностью «Пример»\",")
-                .append("\"name\":\"ООО New\",")
-                .append("\"kpp\":\"123456789\",")
-                .append("\"address\":\"124365 г.Москва, ул. Ленина, д.1, корп.1, офис 1\"}")
-                .toString();
+        this.organizationView.setInn(null);
+        String inputJson = asJsonString(this.organizationView);
 
         this.mockMvc.perform(post("/organization/update")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -171,6 +183,9 @@ public class OrganizationControllerTest {
                 .andExpect(jsonPath("$.error", is("Field (inn) can't be: null")));
     }
 
+    /** Проверка генерации ошибки при обновлении полей организации без указания всех полей
+     * @throws Exception
+     */
     @Test
     public void whenUpdateOrganizationWithoutAnyFieldsThenCheck4xx() throws Exception {
         this.mockMvc.perform(post("/organization/update")
@@ -179,6 +194,10 @@ public class OrganizationControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
+    /** Преобразование объекта в строку Json
+     * @param obj объект для преобразования
+     * @return строка Json
+     */
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

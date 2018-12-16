@@ -17,7 +17,7 @@ import java.util.List;
  * Спецификации для создания запросов к БД
  */
 public class OrganizationSpecification {
-    private static final Logger log = LoggerFactory.getLogger(OrganizationSpecification.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationSpecification.class.getName());
 
     /** Поиск организации по id
      * @param id организации
@@ -29,10 +29,10 @@ public class OrganizationSpecification {
             public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 int i;
                 try {
-                    log.info(String.format("Try to find organizations by id=%s", id));
+                    LOGGER.info(String.format("Try to find organizations by id=%s", id));
                     i = Integer.parseInt(id);
                 } catch (Exception e) {
-                    log.error(String.format("Error parsing %s to int \n Exception: %s", id, e));
+                    LOGGER.error(String.format("Error parsing %s to int \n Exception: %s", id, e));
                     throw new ThereIsNoSuchOrganization();
                 }
                 return cb.equal(root.get("id"), i);
@@ -52,24 +52,24 @@ public class OrganizationSpecification {
             public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (name == null) {
-                    log.error(String.format("There is no field to find organization (name):%s", name));
+                    LOGGER.error(String.format("There is no field to find organization (name):%s", name));
                     throw new ThereIsNoSuchOrganization();
                 }
                 predicates.add(cb.equal(root.get("name"), name));
                 if (inn == null) {
-                    log.error(String.format("There is no field to find organization (inn):%s", inn));
+                    LOGGER.error(String.format("There is no field to find organization (inn):%s", inn));
                     throw new ThereIsNoSuchOrganization();
                 }
                 predicates.add(cb.equal(root.get("inn"), inn));
 
                 if (isActive != null) {
                     if (!(isActive.equalsIgnoreCase("true") || isActive.equalsIgnoreCase("false"))) {
-                        log.error(String.format("There is wrong field to find organization isActive:%s", isActive));
+                        LOGGER.error(String.format("There is wrong field to find organization isActive:%s", isActive));
                         throw new ThereIsNoSuchOrganization();
                     }
                     predicates.add(cb.equal(root.get("isActive"), Boolean.parseBoolean(isActive)));
                 }
-                log.info(String.format("Set specification to find organization"));
+                LOGGER.info(String.format("Set specification to find organization"));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
