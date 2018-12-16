@@ -15,6 +15,7 @@ public class Wrapper<T> {
 
     public Wrapper() {
     }
+
     public Wrapper(List<T> data) {
         this.data = data;
     }
@@ -30,6 +31,7 @@ public class Wrapper<T> {
     public List<T> getData() {
         return data;
     }
+
     public void setData(List<T> data) {
         this.data = data;
     }
