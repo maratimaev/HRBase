@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * Сущность, связанная с таблицей employer
@@ -84,6 +85,12 @@ public class Employer {
      */
     @Column(name = "is_identified")
     private boolean isIdentified = false;
+
+    /**
+     * Служебное полк JPA
+     */
+    @Version
+    private Integer version;
 
     public int getId() {
         return id;

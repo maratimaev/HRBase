@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 /**
@@ -40,6 +42,7 @@ public class Document {
      * Дата выдачи документа
      */
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     public int getId() {

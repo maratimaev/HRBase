@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 
 /**
@@ -48,6 +49,12 @@ public class Office {
      */
     @Column(name = "is_active")
     private boolean isActive = true;
+
+    /**
+     * Служебное полк JPA
+     */
+    @Version
+    private Integer version;
 
     /**
      * Название организации

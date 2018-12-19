@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,6 +66,12 @@ public class Organization {
      */
     @Column(name = "is_active")
     private boolean isActive = false;
+
+    /**
+     * Служебное полк JPA
+     */
+    @Version
+    private Integer version;
 
     /**
      * Список офисов организации

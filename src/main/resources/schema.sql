@@ -7,6 +7,7 @@
 --   address     адрес
 --   phone       телефон
 --   is_active   признак активности
+--   version   оптимистичная блокировка
 CREATE TABLE IF NOT EXISTS organization (
   id              INTEGER PRIMARY KEY AUTO_INCREMENT,
   name            VARCHAR (50)  NOT NULL,
@@ -15,7 +16,8 @@ CREATE TABLE IF NOT EXISTS organization (
   kpp             VARCHAR (9)  NOT NULL,
   address         VARCHAR (200) NOT NULL,
   phone           VARCHAR (20),
-  is_active       BOOLEAN DEFAULT FALSE
+  is_active       BOOLEAN DEFAULT FALSE,
+  version         INTEGER
 );
 
 -- Оффис
@@ -25,13 +27,15 @@ CREATE TABLE IF NOT EXISTS organization (
 --   address   адрес
 --   phone     телефон
 --   is_active признак активности
+--   version   оптимистичная блокировка
 CREATE TABLE IF NOT EXISTS office (
   id        INTEGER PRIMARY KEY AUTO_INCREMENT,
   org_id    INTEGER NOT NULL,
   name      VARCHAR (50)  NOT NULL,
   address   VARCHAR (200) NOT NULL,
   phone     VARCHAR (20),
-  is_active BOOLEAN DEFAULT FALSE
+  is_active BOOLEAN DEFAULT FALSE,
+  version   INTEGER
 );
 
 ALTER TABLE office ADD FOREIGN KEY (org_id) REFERENCES organization(id);
@@ -49,6 +53,7 @@ CREATE INDEX IX_office_org_id ON office (org_id);
 --   document_id       внешний ключ к документу
 --   citizenship_id    внешний ключ к стране
 --   is_identified     признак идентификации
+--   version   оптимистичная блокировка
 CREATE TABLE IF NOT EXISTS employer (
   id                INTEGER PRIMARY KEY AUTO_INCREMENT,
   office_id         INTEGER NOT NULL,
@@ -60,7 +65,8 @@ CREATE TABLE IF NOT EXISTS employer (
   phone             VARCHAR (50),
   document_id       INTEGER NOT NULL,
   citizenship_id    INTEGER NOT NULL,
-  is_identified     BOOLEAN DEFAULT FALSE
+  is_identified     BOOLEAN DEFAULT FALSE,
+  version   INTEGER
 );
 
 ALTER TABLE employer ADD FOREIGN KEY (office_id) REFERENCES office(id);
