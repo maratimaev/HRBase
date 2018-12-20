@@ -3,8 +3,9 @@ package ru.bellintegrator.hrbase.service.specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
-import ru.bellintegrator.hrbase.exception.ThereIsNoSuchOrganization;
 import ru.bellintegrator.hrbase.entity.Organization;
+import ru.bellintegrator.hrbase.exception.CantFindById;
+import ru.bellintegrator.hrbase.exception.CantFindByNameInnActive;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,11 +30,11 @@ public class OrganizationSpecification {
             public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 int i;
                 try {
-                    LOGGER.info(String.format("Try to find organizations by id=%s", id));
+                    LOGGER.debug(String.format("Try to find organizations by id=%s", id));
                     i = Integer.parseInt(id);
                 } catch (Exception e) {
                     LOGGER.error(String.format("Error parsing %s to int \n Exception: %s", id, e));
-                    throw new ThereIsNoSuchOrganization();
+                    throw new CantFindById(id);
                 }
                 return cb.equal(root.get("id"), i);
             }
@@ -53,23 +54,23 @@ public class OrganizationSpecification {
                 List<Predicate> predicates = new ArrayList<>();
                 if (name == null) {
                     LOGGER.error(String.format("There is no field to find organization (name):%s", name));
-                    throw new ThereIsNoSuchOrganization();
+                    throw new CantFindByNameInnActive(name, inn, isActive);
                 }
                 predicates.add(cb.equal(root.get("name"), name));
                 if (inn == null) {
                     LOGGER.error(String.format("There is no field to find organization (inn):%s", inn));
-                    throw new ThereIsNoSuchOrganization();
+                    throw new CantFindByNameInnActive(name, inn, isActive);
                 }
                 predicates.add(cb.equal(root.get("inn"), inn));
 
                 if (isActive != null) {
                     if (!(isActive.equalsIgnoreCase("true") || isActive.equalsIgnoreCase("false"))) {
                         LOGGER.error(String.format("There is wrong field to find organization isActive:%s", isActive));
-                        throw new ThereIsNoSuchOrganization();
+                        throw new CantFindByNameInnActive(name, inn, isActive);
                     }
                     predicates.add(cb.equal(root.get("isActive"), Boolean.parseBoolean(isActive)));
                 }
-                LOGGER.info(String.format("Set specification to find organization"));
+                LOGGER.debug(String.format("Set specification to find organization"));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

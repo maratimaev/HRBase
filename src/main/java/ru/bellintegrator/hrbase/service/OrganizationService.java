@@ -1,7 +1,7 @@
 package ru.bellintegrator.hrbase.service;
 
-import ru.bellintegrator.hrbase.view.Wrapper;
 import ru.bellintegrator.hrbase.view.OrganizationView;
+import ru.bellintegrator.hrbase.view.Wrapper;
 
 /**
  * Сервисы для работы с организацией
@@ -27,7 +27,7 @@ public interface OrganizationService {
     void saveOrganization(OrganizationView organizationView);
 
     /** Изменение данных организации
-     * @param organizationView объеккт json
+     * @param organizationView объект json
      */
     void updateOrganization(OrganizationView organizationView);
 }

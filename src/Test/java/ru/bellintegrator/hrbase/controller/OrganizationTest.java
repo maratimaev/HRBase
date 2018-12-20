@@ -1,6 +1,5 @@
 package ru.bellintegrator.hrbase.controller;
 
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,23 +7,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.bellintegrator.hrbase.service.OrganizationServiceImpl;
 import ru.bellintegrator.hrbase.view.OrganizationView;
 import ru.bellintegrator.hrbase.view.Wrapper;
 import ru.bellintegrator.hrbase.view.status.Error;
+import ru.bellintegrator.hrbase.view.status.Success;
 
 import java.net.URI;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -32,7 +29,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class OrganizationTest {
     /**
      * Порт web сервера. Генерируется случайным образом.
@@ -47,39 +44,56 @@ public class OrganizationTest {
     private TestRestTemplate restTemplate;
 
     /**
+     * Объект для подготовки тестов. Сохранение примера организации в БД.
+     */
+    @Autowired
+    private OrganizationServiceImpl service;
+
+    /**
      * Проверка поиска организации по id
      */
     @Test
     public void whenGetOrganizationByExistingIdThenCheckJsonData() {
+        saveSampleOrganization();
+
         String url = String.format("http://localhost:%s/organization/1", port);
         ResponseEntity<Wrapper<OrganizationView>> response = restTemplate.exchange(
                 url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<Wrapper<OrganizationView>>() {
                 });
-        OrganizationView organizationView = response.getBody().getData().get(0);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        assertThat(response.hasBody(), is(true));
 
-        assertThat(organizationView, is(notNullValue()));
-        assertThat(organizationView.getName(), is("ООО «Пример»"));
-        assertThat(organizationView.getFullName(), is("Общество с ограниченной ответственностью «Пример»"));
-        assertThat(organizationView.getInn(), is("1234567891"));
-        assertThat(organizationView.getKpp(), is("123456789"));
-        assertThat(organizationView.getAddress(), is("124365 г.Москва, ул. Ленина, д.1, корп.1, офис 1"));
-        assertThat(organizationView.getPhone(), is("+7 499 333 4455"));
-        assertThat(organizationView.isActive(), is(false));
+        if (response.getBody() != null) {
+            OrganizationView organizationView = response.getBody().getData().get(0);
+
+            assertThat(organizationView, is(notNullValue()));
+            assertThat(organizationView.getName(), is("testName"));
+            assertThat(organizationView.getFullName(), is("testFullName"));
+            assertThat(organizationView.getInn(), is("123456789"));
+            assertThat(organizationView.getKpp(), is("123456789"));
+            assertThat(organizationView.getAddress(), is("testAddress"));
+            assertThat(organizationView.getPhone(), is("123456789"));
+            assertThat(organizationView.isActive(), is(true));
+        }
     }
 
     /** Проверка генерации ошибки при поиске несуществующей организации
      * @throws Exception URISyntaxEception
      */
     @Test
-    public void whenGetOrganizationByFakeIdThenCheck500() throws Exception {
-        URI uri = new URI(String.format("http://localhost:%s/organization/10", port));
-        ResponseEntity<Wrapper<OrganizationView>> response = restTemplate.exchange(
+    public void whenGetOrganizationByFakeIdThenCheck404() throws Exception {
+        URI uri = new URI(String.format("http://localhost:%s/organization/1", port));
+        ResponseEntity<Error> response = restTemplate.exchange(
                 uri, HttpMethod.GET, null,
-                new ParameterizedTypeReference<Wrapper<OrganizationView>>() {
+                new ParameterizedTypeReference<Error>() {
                 });
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(response.hasBody(), is(true));
 
-        assertThat(response.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+        if (response.getBody() != null) {
+            assertThat(response.getBody().getError(), is("There is no organization by such id = 1"));
+        }
     }
 
     /**
@@ -87,169 +101,161 @@ public class OrganizationTest {
      */
     @Test
     public void whenGetOrganizationListThenCheckJsonData() {
-        String url = new StringBuilder()
-                .append(String.format("http://localhost:%s/organization/list", port))
-                .append("?name=ООО «Пример»")
-                .append("&inn=1234567891")
-                .append("&isActive=false")
-                .toString();
+        saveSampleOrganization();
+
+        String url = String.format("http://localhost:%s/organization/list", port)
+                + "?name=testName"
+                + "&inn=123456789"
+                + "&isActive=true";
 
         ResponseEntity<Wrapper<OrganizationView>> response = restTemplate.exchange(
                 url, HttpMethod.POST, null,
                 new ParameterizedTypeReference<Wrapper<OrganizationView>>() {
                 });
-         OrganizationView organizationView = response.getBody().getData().get(0);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        assertThat(response.hasBody(), is(true));
 
-        assertThat(organizationView, is(notNullValue()));
-        assertThat(organizationView.getId(), is(1));
-        assertThat(organizationView.getName(), is("ООО «Пример»"));
-        assertThat(organizationView.isActive(), is(false));
+        if (response.getBody() != null) {
+            OrganizationView organizationView = response.getBody().getData().get(0);
+            assertThat(organizationView, is(notNullValue()));
+            assertThat(organizationView.getId(), is(1));
+            assertThat(organizationView.getName(), is("testName"));
+            assertThat(organizationView.isActive(), is(true));
+        }
     }
 
     /**
      * Проверка генерации ошибки при поиске организации без указания имени
      */
     @Test
-    public void whenGetOrganizationListByFakeNameThenCheck500() {
-        String url = new StringBuilder()
-                .append(String.format("http://localhost:%s/organization/list", port))
-                .append("?name=ООО «Error»")
-                .append("&inn=1234567891")
-                .append("&isActive=false")
-                .toString();
+    public void whenGetOrganizationListByFakeNameThenCheck404() {
+        saveSampleOrganization();
+        String url = String.format("http://localhost:%s/organization/list", port)
+                + "?name=fakeName"
+                + "&inn=123456789"
+                + "&isActive=true";
 
         ResponseEntity<Error> response = restTemplate.exchange(
                 url, HttpMethod.POST, null,
                 new ParameterizedTypeReference<Error>() {
                 });
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(response.hasBody(), is(true));
 
-        assertThat(response.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
-        assertThat(response.getBody().getError(), is("There is no such organization"));
+        if (response.getBody() != null) {
+            assertThat(response.getBody().getError(),
+                    is("There is no organization by such name = fakeName, inn = 123456789, isActive = true"));
+        }
     }
 
-    /** Проверка сохранения новой организации
-     * @throws Exception JSONException
+    /**
+     * Проверка сохранения новой организации
      */
     @Test
-    public void whenSaveOrganizationThenCheckSuccess() throws Exception {
-        String url = String.format("http://localhost:%s/organization/save", port);
-        JSONObject request = new JSONObject();
-        request.put("name", "ООО «New»");
-        request.put("fullName", "Общество с ограниченной ответственностью «Пример»");
-        request.put("inn", "1234567891");
-        request.put("kpp", "123456789");
-        request.put("address", "124365 г.Москва, ул. Ленина, д.1, корп.1, офис 1");
+    public void whenSaveOrganizationThenCheckSuccess() {
+        String saveUrl = String.format("http://localhost:%s/organization/save", port);
+        OrganizationView orgView = getSampleOrganization();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
-
-        ResponseEntity<Error> responseBody = restTemplate.exchange(url, HttpMethod.POST, entity, Error.class);
-
-        assertThat(responseBody, is(notNullValue()));
-        assertThat(responseBody.getBody().getError(), is(nullValue()));
-
-        url = String.format("http://localhost:%s/organization/3", port);
-        ResponseEntity<Wrapper<OrganizationView>> response = restTemplate.exchange(
-                url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<Wrapper<OrganizationView>>() {
-                });
-        OrganizationView organizationView = response.getBody().getData().get(0);
-
-        assertThat(organizationView, is(notNullValue()));
-        assertThat(organizationView.getName(), is("ООО «New»"));
+        ResponseEntity<Success> saveResponse = restTemplate.postForEntity(saveUrl, orgView, Success.class);
+        assertThat(saveResponse.getStatusCode(), is(HttpStatus.CREATED));
+        assertThat(saveResponse.hasBody(), is(true));
+        if (saveResponse.getBody() != null) {
+            assertThat(saveResponse.getBody().getResult(), is("success"));
         }
 
-    /** Проверка генерации ошибки при сохранении организации без указания имени
-     * @throws Exception JSONException
+        String getUrl = String.format("http://localhost:%s/organization/1", port);
+        ResponseEntity<Wrapper<OrganizationView>> getResponse = restTemplate.exchange(
+                getUrl, HttpMethod.GET, null,
+                new ParameterizedTypeReference<Wrapper<OrganizationView>>() {
+                });
+        assertThat(getResponse.getStatusCode(), is(HttpStatus.OK));
+        assertThat(getResponse.hasBody(), is(true));
+        if (getResponse.getBody() != null) {
+            OrganizationView organizationView = getResponse.getBody().getData().get(0);
+            assertThat(organizationView, is(notNullValue()));
+            assertThat(organizationView.getName(), is("testName"));
+        }
+        }
+
+    /**
+     * Проверка генерации ошибки при сохранении организации без указания имени
      */
     @Test
-    public void whenSaveOrganizationWithoutNameThenCheckError() throws Exception {
+    public void whenSaveOrganizationWithoutNameThenCheck406() {
         String url = String.format("http://localhost:%s/organization/save", port);
-        JSONObject request = new JSONObject();
-        request.put("fullName", "Общество с ограниченной ответственностью «Пример»");
-        request.put("inn", "1234567891");
-        request.put("kpp", "123456789");
-        request.put("address", "124365 г.Москва, ул. Ленина, д.1, корп.1, офис 1");
+        OrganizationView orgView = getSampleOrganization();
+        orgView.setName(null);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
-
-        ResponseEntity<Error> responseBody = restTemplate.exchange(url, HttpMethod.POST, entity, Error.class);
-
-        assertThat(responseBody, is(notNullValue()));
-        assertThat(responseBody.getBody().getError(), is("Field (name) can't be: null"));
+        ResponseEntity<Error> saveResponse = restTemplate.postForEntity(url, orgView, Error.class);
+        assertThat(saveResponse.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
+        assertThat(saveResponse.hasBody(), is(true));
+        if (saveResponse.getBody() != null) {
+            assertThat(saveResponse.getBody().getError(), is("Field (name) can't be: null"));
+        }
     }
 
     /**
      *  Проверка генерации ошибки при сохранении организации без заполнения всех полей
      */
     @Test
-    public void whenSaveOrganizationWithoutAnyFieldsThenCheck4xx() {
+    public void whenSaveOrganizationWithoutAnyFieldsThenCheck406() {
         String url = String.format("http://localhost:%s/organization/save", port);
-        JSONObject request = new JSONObject();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
+        OrganizationView orgView = new OrganizationView();
 
-        ResponseEntity<Error> responseBody = restTemplate.exchange(url, HttpMethod.POST, entity, Error.class);
-
-        assertThat(responseBody, is(notNullValue()));
-        assertThat(responseBody.getBody(), is(notNullValue()));
+        ResponseEntity<Error> saveResponse = restTemplate.postForEntity(url, orgView, Error.class);
+        assertThat(saveResponse.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
+        assertThat(saveResponse.hasBody(), is(true));
+        if (saveResponse.getBody() != null) {
+            assertThat(saveResponse.getBody().getError().contains("can't be: null"), is(true));
+        }
     }
 
-    /** Проверка обновления полей организации
-     * @throws Exception JSONException
+    /**
+     * Проверка обновления полей организации
      */
     @Test
-    public void whenUpdateOrganizationThenCheckSuccess() throws Exception {
+    public void whenUpdateOrganizationThenCheckSuccess() {
+        saveSampleOrganization();
+
         String url = String.format("http://localhost:%s/organization/update", port);
-        JSONObject request = new JSONObject();
-        request.put("id", "2");
-        request.put("name", "ООО «New»");
-        request.put("fullName", "Общество с ограниченной ответственностью «Пример»");
-        request.put("inn", "1234567891");
-        request.put("kpp", "123456789");
-        request.put("address", "124365 г.Москва, ул. Ленина, д.1, корп.1, офис 1");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
+        OrganizationView orgView = getSampleOrganization();
+        orgView.setInn("987654321");
 
-        ResponseEntity<Error> responseBody = restTemplate.exchange(url, HttpMethod.POST, entity, Error.class);
-        assertThat(responseBody, is(notNullValue()));
-        assertThat(responseBody.getBody().getError(), is(nullValue()));
-
-        url = String.format("http://localhost:%s/organization/2", port);
-        ResponseEntity<Wrapper<OrganizationView>> response = restTemplate.exchange(
-                url, HttpMethod.GET, null,
+        ResponseEntity<Success> response = restTemplate.postForEntity(url, orgView, Success.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.ACCEPTED));
+        assertThat(response.hasBody(), is(true));
+        if (response.getBody() != null) {
+            assertThat(response.getBody().getResult(), is("success"));
+        }
+        String getUrl = String.format("http://localhost:%s/organization/1", port);
+        ResponseEntity<Wrapper<OrganizationView>> responseEntity = restTemplate.exchange(
+                getUrl, HttpMethod.GET, null,
                 new ParameterizedTypeReference<Wrapper<OrganizationView>>() {
                 });
-        OrganizationView organizationView = response.getBody().getData().get(0);
-
-        assertThat(organizationView, is(notNullValue()));
-        assertThat(organizationView.getName(), is("ООО «New»"));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.hasBody(), is(true));
+        if (responseEntity.getBody() != null) {
+            OrganizationView organizationView = responseEntity.getBody().getData().get(0);
+            assertThat(organizationView, is(notNullValue()));
+            assertThat(organizationView.getInn(), is("987654321"));
+        }
     }
 
-    /** Проверка генерации ошибки при обновлении полей организации без указания инн
-     * @throws Exception JSONException
+    /**
+     * Проверка генерации ошибки при обновлении полей организации без указания инн
      */
     @Test
-    public void whenUpdateOrganizationWithoutInnThenCheckError() throws Exception {
+    public void whenUpdateOrganizationWithoutInnThenCheckError() {
         String url = String.format("http://localhost:%s/organization/update", port);
-        JSONObject request = new JSONObject();
-        request.put("id", "1");
-        request.put("name", "ООО «New»");
-        request.put("fullName", "Общество с ограниченной ответственностью «Пример»");
-        request.put("kpp", "123456789");
-        request.put("address", "124365 г.Москва, ул. Ленина, д.1, корп.1, офис 1");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
+        OrganizationView orgView = getSampleOrganization();
+        orgView.setInn(null);
 
-        ResponseEntity<Error> responseBody = restTemplate.exchange(url, HttpMethod.POST, entity, Error.class);
-        assertThat(responseBody, is(notNullValue()));
-        assertThat(responseBody.getBody().getError(), is("Field (inn) can't be: null"));
+        ResponseEntity<Error> response = restTemplate.postForEntity(url, orgView, Error.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
+        assertThat(response.hasBody(), is(true));
+        if (response.getBody() != null) {
+            assertThat(response.getBody().getError(), is("Field (inn) can't be: null"));
+        }
     }
 
     /**
@@ -258,13 +264,36 @@ public class OrganizationTest {
     @Test
     public void whenUpdateOrganizationWithoutAnyFieldsThenCheck4xx()  {
         String url = String.format("http://localhost:%s/organization/update", port);
-        JSONObject request = new JSONObject();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
+        OrganizationView orgView = new OrganizationView();
 
-        ResponseEntity<Error> responseBody = restTemplate.exchange(url, HttpMethod.POST, entity, Error.class);
-        assertThat(responseBody, is(notNullValue()));
-        assertThat(responseBody.getBody(), is(notNullValue()));
+        ResponseEntity<Error> response = restTemplate.postForEntity(url, orgView, Error.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
+        assertThat(response.hasBody(), is(true));
+        if (response.getBody() != null) {
+            assertThat(response.getBody().getError().contains("can't be: null"), is(true));
+        }
+    }
+
+    /** Создание тестового объекта OrganizationView
+     * @return созданный объект
+     */
+    private OrganizationView getSampleOrganization() {
+        OrganizationView orgView = new OrganizationView();
+        orgView.setId(1);
+        orgView.setName("testName");
+        orgView.setFullName("testFullName");
+        orgView.setInn("123456789");
+        orgView.setKpp("123456789");
+        orgView.setAddress("testAddress");
+        orgView.setPhone("123456789");
+        orgView.setActive(true);
+        return orgView;
+    }
+
+    /**
+     * Сохранение тестового объекта в базе данных
+     */
+    private void saveSampleOrganization() {
+        this.service.saveOrganization(getSampleOrganization());
     }
 }
