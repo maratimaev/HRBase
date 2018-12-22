@@ -65,7 +65,7 @@ public class Organization {
      * Признак активности
      */
     @Column(name = "is_active")
-    private boolean isActive = false;
+    private Boolean isActive;
 
     /**
      * Служебное полк JPA
@@ -131,12 +131,12 @@ public class Organization {
         this.phone = phone;
     }
 
-    public boolean isActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     public Set<Office> getOffices() {

@@ -14,7 +14,7 @@ import ru.bellintegrator.hrbase.exception.CantUpdateOrganization;
 import ru.bellintegrator.hrbase.repository.OrganizationRepository;
 import ru.bellintegrator.hrbase.service.specification.OrganizationSpecification;
 import ru.bellintegrator.hrbase.view.OrganizationView;
-import ru.bellintegrator.hrbase.view.Wrapper;
+import ru.bellintegrator.hrbase.view.result.Wrapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,11 +51,12 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    public Wrapper<OrganizationView> getOrganizations(String name, String inn, String isActive) {
-        List<Organization> list = organizationRepository.findAll(OrganizationSpecification.listBy(name, inn, isActive));
+    public Wrapper<OrganizationView> getOrganizations(OrganizationView orgView) {
+        List<Organization> list = organizationRepository.findAll(
+                OrganizationSpecification.listBy(orgView.getName(), orgView.getInn(), orgView.getIsActive()));
         if (list.isEmpty()) {
-            LOGGER.error(String.format("Can't find organization by name=%s, inn=%s, isActive=%s", name, inn, isActive));
-            throw new CantFindByNameInnActive(name, inn, isActive);
+            LOGGER.error(String.format("Can't find organization by name=%s, inn=%s, isActive=%s", orgView.getName(), orgView.getInn(), orgView.getIsActive()));
+            throw new CantFindByNameInnActive(orgView.getName(), orgView.getInn(), orgView.getIsActive());
         }
         LOGGER.debug(String.format("Find organizations \n %s", mapperFacade.mapAsList(list, OrganizationView.class)));
         return new Wrapper<>(mapperFacade.mapAsList(list, OrganizationView.class));
@@ -65,10 +66,10 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    public void saveOrganization(OrganizationView organizationView) {
-        LOGGER.debug(String.format("Save organizations \n %s", organizationView.toString()));
+    public void saveOrganization(OrganizationView orgView) {
+        LOGGER.debug(String.format("Save organizations \n %s", orgView.toString()));
         try {
-            organizationRepository.saveAndFlush(mapperFacade.map(organizationView, Organization.class));
+            organizationRepository.saveAndFlush(mapperFacade.map(orgView, Organization.class));
         } catch (Exception ex) {
             throw new CantSaveNewOrganization();
         }
@@ -77,16 +78,22 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * {@inheritDoc}
      */
-    @Transactional
     @Override
-    public void updateOrganization(OrganizationView organizationView) {
-        Optional<Organization> optional = organizationRepository.findById(organizationView.getId());
-        LOGGER.debug(String.format("Find organization for updating \n %s \n result: %s", organizationView.toString(), optional));
+    @Transactional
+    public void updateOrganization(OrganizationView orgView) {
+        int id;
+        try {
+            id = Integer.parseInt(orgView.getId());
+        } catch (NumberFormatException ex) {
+            throw new CantUpdateOrganization();
+        }
+        Optional<Organization> optional = organizationRepository.findById(id);
+        LOGGER.debug(String.format("Find organization for updating \n %s \n result: %s", orgView.toString(), optional));
         if (!optional.isPresent()) {
-            throw new CantFindById(" " + organizationView.getId());
+            throw new CantFindById(" " + orgView.getId());
         }
         Organization organization = optional.get();
-        mapperFacade.map(organizationView, organization);
+        mapperFacade.map(orgView, organization);
         try {
             organizationRepository.saveAndFlush(organization);
         } catch (Exception ex) {

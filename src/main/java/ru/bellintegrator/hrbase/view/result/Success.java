@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.view.status;
+package ru.bellintegrator.hrbase.view.result;
 
 /**
  * Возвращение сообщения об успешности операции

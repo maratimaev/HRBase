@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.view;
+package ru.bellintegrator.hrbase.view.result;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;
@@ -9,7 +9,7 @@ import java.util.List;
 /** Класс - обертка для выводимых данных
  * @param <T>
  */
-public class Wrapper<T> {
+public class Wrapper<T> implements Result {
     @JsonView(WrapperProfile.Data.class)
     private List<T> data;
 

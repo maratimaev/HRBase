@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.bellintegrator.hrbase.view.status.Error;
+import ru.bellintegrator.hrbase.view.result.Error;
 
 /**
  * Класс обработки ошибок с объектами Organization
