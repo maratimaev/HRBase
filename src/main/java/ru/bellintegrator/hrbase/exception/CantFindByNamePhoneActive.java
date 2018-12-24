@@ -3,27 +3,41 @@ package ru.bellintegrator.hrbase.exception;
 /**
  * Выбрасывается, если нельзя найти организацию по имени, инн, признаку активности. Все параметры обязательные.
  */
-public class CantFindByNameInnActive extends RuntimeException {
+public class CantFindByNamePhoneActive extends RuntimeException {
     /**
-     * Имя организации
+     * Id организации
+     */
+    private String orgId;
+
+    /**
+     * Имя офиса
      */
     private String name;
     /**
-     * ИНН организации
+     * Телефон офиса
      */
-    private String inn;
+    private String phone;
     /**
      * Признак активности
      */
     private String isActive;
 
-    public CantFindByNameInnActive() {
+    public CantFindByNamePhoneActive() {
     }
 
-    public CantFindByNameInnActive(String name, String inn, String isActive) {
+    public CantFindByNamePhoneActive(String orgId, String name, String phone, String isActive) {
         this.name = name;
-        this.inn = inn;
+        this.phone = phone;
         this.isActive = isActive;
+        this.orgId = orgId;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
     }
 
     public String getName() {
@@ -34,12 +48,12 @@ public class CantFindByNameInnActive extends RuntimeException {
         this.name = name;
     }
 
-    public String getInn() {
-        return inn;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setInn(String inn) {
-        this.inn = inn;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getIsActive() {

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import ru.bellintegrator.hrbase.entity.Organization;
-import ru.bellintegrator.hrbase.exception.CantFindById;
 import ru.bellintegrator.hrbase.exception.CantFindByNameInnActive;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,27 +18,6 @@ import java.util.List;
  */
 public class OrganizationSpecification {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationSpecification.class.getName());
-
-    /** Поиск организации по id
-     * @param id организации
-     * @return условие выборки
-     */
-    public static Specification<Organization> organizationBy(String id) {
-        return new Specification<Organization>() {
-            @Override
-            public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                int i;
-                try {
-                    LOGGER.debug(String.format("Try to find organizations by id=%s", id));
-                    i = Integer.parseInt(id);
-                } catch (Exception e) {
-                    LOGGER.error(String.format("Error parsing %s to int \n Exception: %s", id, e));
-                    throw new CantFindById(id);
-                }
-                return cb.equal(root.get("id"), i);
-            }
-        };
-    }
 
     /** Поиск организаций по параметрам
      * @param name имя

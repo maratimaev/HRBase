@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.view;
+package ru.bellintegrator.hrbase.view.organization;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;

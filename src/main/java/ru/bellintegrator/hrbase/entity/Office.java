@@ -1,7 +1,5 @@
 package ru.bellintegrator.hrbase.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,7 +58,6 @@ public class Office {
      * Название организации
      * которой принадлежит офис
      */
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "org_id")
     private Organization organization;
@@ -93,12 +90,12 @@ public class Office {
         this.phone = phone;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public Organization getOrganization() {

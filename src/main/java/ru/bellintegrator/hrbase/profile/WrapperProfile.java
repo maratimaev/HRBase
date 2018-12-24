@@ -12,10 +12,10 @@ public interface WrapperProfile {
     /**
      * {@inheritDoc}
      */
-    interface OrganizationShort extends Data, OrganizationProfile.Short { }
+    interface Short extends Data, Profile.Short { }
 
     /**
      * {@inheritDoc}
      */
-    interface OrganizationFull extends Data, OrganizationProfile.Full { }
+    interface Full extends Data, Profile.Full { }
 }

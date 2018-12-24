@@ -1,9 +1,9 @@
 package ru.bellintegrator.hrbase.profile;
 
 /**
- * Профили JsonView для фильтрации полей класса Organization
+ * Профили JsonView для фильтрации полей класса organization
  */
-public interface OrganizationProfile {
+public interface Profile {
     /**
      * Краткий вид, поля
      *  name

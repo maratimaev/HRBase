@@ -9,6 +9,9 @@ public class CantFindById extends RuntimeException {
      */
     private String id;
 
+    public CantFindById() {
+    }
+
     public CantFindById(String id) {
         this.id = id;
     }

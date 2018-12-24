@@ -1,13 +1,13 @@
 package ru.bellintegrator.hrbase.view.result;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.profile.OrganizationProfile;
+import ru.bellintegrator.hrbase.profile.Profile;
 
 /**
  * Возвращение сообщения об ошибке в виде json
  */
 public class Error implements Result {
-    @JsonView(OrganizationProfile.Short.class)
+    @JsonView(Profile.Short.class)
     private String error;
 
     public Error() {

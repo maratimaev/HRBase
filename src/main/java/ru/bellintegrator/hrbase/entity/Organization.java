@@ -2,18 +2,14 @@ package ru.bellintegrator.hrbase.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * Сущность, связанная с таблицей Organization
+ * Сущность, связанная с таблицей organization
  */
 @Entity
 @Table(name = "organization")
@@ -73,12 +69,6 @@ public class Organization {
     @Version
     private Integer version;
 
-    /**
-     * Список офисов организации
-     */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organization")
-    private Set<Office> offices = new HashSet<>();
-
     public int getId() {
         return id;
     }
@@ -137,13 +127,5 @@ public class Organization {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
-    }
-
-    public Set<Office> getOffices() {
-        return offices;
-    }
-
-    public void setOffices(Set<Office> offices) {
-        this.offices = offices;
     }
 }

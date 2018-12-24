@@ -1,6 +1,7 @@
 package ru.bellintegrator.hrbase.service;
 
-import ru.bellintegrator.hrbase.view.OrganizationView;
+import ru.bellintegrator.hrbase.entity.Organization;
+import ru.bellintegrator.hrbase.view.organization.OrganizationView;
 import ru.bellintegrator.hrbase.view.result.Wrapper;
 
 /**
@@ -28,4 +29,10 @@ public interface OrganizationService {
      * @param organizationView объект json c constraints
      */
     void updateOrganization(OrganizationView organizationView);
+
+    /** Возвращает организацию по id из БД
+     * @param sid организации
+     * @return entity организации
+     */
+    Organization getOrgById(String sid);
 }

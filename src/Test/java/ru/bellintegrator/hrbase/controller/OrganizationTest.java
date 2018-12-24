@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.bellintegrator.hrbase.service.OrganizationServiceImpl;
-import ru.bellintegrator.hrbase.view.OrganizationView;
+import ru.bellintegrator.hrbase.view.organization.OrganizationView;
 import ru.bellintegrator.hrbase.view.result.Error;
 import ru.bellintegrator.hrbase.view.result.Success;
 import ru.bellintegrator.hrbase.view.result.Wrapper;
@@ -28,7 +28,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 /**
- * Интеграционные тесты работы с Organization
+ * Интеграционные тесты работы с organization
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

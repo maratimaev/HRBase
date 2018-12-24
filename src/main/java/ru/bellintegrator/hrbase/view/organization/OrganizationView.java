@@ -1,7 +1,7 @@
-package ru.bellintegrator.hrbase.view;
+package ru.bellintegrator.hrbase.view.organization;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.profile.OrganizationProfile;
+import ru.bellintegrator.hrbase.profile.Profile;
 
 /**
  * Отображение даанных организации
@@ -10,62 +10,50 @@ public class OrganizationView {
     /**
      * id организации
      */
-    @JsonView(OrganizationProfile.Short.class)
+    @JsonView(Profile.Short.class)
     private String id;
 
     /**
      * Имя организации
      */
-    @JsonView(OrganizationProfile.Short.class)
+    @JsonView(Profile.Short.class)
     private String name;
 
     /**
      * Полное имя организации
      */
-    @JsonView(OrganizationProfile.Full.class)
+    @JsonView(Profile.Full.class)
     private String fullName;
 
     /**
      * Инн организации
      */
-    @JsonView(OrganizationProfile.Full.class)
+    @JsonView(Profile.Full.class)
     private String inn;
 
     /**
      * КПП организации
      */
-    @JsonView(OrganizationProfile.Full.class)
+    @JsonView(Profile.Full.class)
     private String kpp;
 
     /**
      * Адрес
      */
-    @JsonView(OrganizationProfile.Full.class)
+    @JsonView(Profile.Full.class)
     private String address;
 
     /**
      * Телефон
      */
-    @JsonView(OrganizationProfile.Full.class)
+    @JsonView(Profile.Full.class)
     private String phone;
 
     /**
      * Признак активности
      */
-    @JsonView(OrganizationProfile.Short.class)
+    @JsonView(Profile.Short.class)
     private String isActive;
-
-    public OrganizationView() {
-    }
-
-    public OrganizationView(String id, String name, String fullName, String inn, String kpp, String address) {
-        this.id = id;
-        this.name = name;
-        this.fullName = fullName;
-        this.inn = inn;
-        this.kpp = kpp;
-        this.address = address;
-    }
 
     public String getId() {
         return id;
