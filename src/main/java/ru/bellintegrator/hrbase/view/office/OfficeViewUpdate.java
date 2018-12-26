@@ -39,10 +39,9 @@ public class OfficeViewUpdate extends OfficeView {
     /**
      * Признак активности
      */
-    @Pattern(regexp = "false|true")
+    @Pattern(regexp = "false|true+$|^$")
     private String isActive;
 
-//    @NotEmpty
     @Pattern(regexp = "\\b(?!(?:0)\\b)\\d{1,9}\\b")
     private String orgId;
 

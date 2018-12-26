@@ -91,7 +91,7 @@ public class OrganizationTest {
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
         assertThat(response.getBody(), is(notNullValue()));
 
-        assertThat(response.getBody().getError(), is("There is no organization by such id = 1"));
+        assertThat(response.getBody().getError(), is("There is no finding by parameter, no such organization id=1"));
     }
 
     /**
@@ -146,7 +146,7 @@ public class OrganizationTest {
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
         assertThat(response.getBody(), is(notNullValue()));
         assertThat(response.getBody().getError(),
-                is("There is no organization by such name = fakeName, inn = 123456789, isActive = true"));
+                is("There is no finding by parameter, name=fakeName, inn=123456789, isActive=true"));
     }
 
     /**
@@ -279,6 +279,6 @@ public class OrganizationTest {
      * Сохранение тестового объекта в базе данных
      */
     private void saveSampleOrganization() {
-        this.service.saveOrganization(getSampleOrganization());
+        this.service.save(getSampleOrganization());
     }
 }

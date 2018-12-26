@@ -56,15 +56,15 @@ CREATE INDEX IX_office_org_id ON office (org_id);
 --   version           оптимистичная блокировка
 CREATE TABLE IF NOT EXISTS employer (
   id                INTEGER PRIMARY KEY AUTO_INCREMENT,
-  office_id         INTEGER NOT NULL,
+  office_id         INTEGER,
   first_name        VARCHAR (50) NOT NULL,
   last_name         VARCHAR (50),
   middle_name       VARCHAR (50),
   second_name       VARCHAR (50),
   position          VARCHAR (50) NOT NULL,
   phone             VARCHAR (50),
-  document_id       INTEGER NOT NULL,
-  citizenship_id    INTEGER NOT NULL,
+  document_id       INTEGER,
+  citizenship_id    INTEGER,
   is_identified     BOOLEAN DEFAULT FALSE,
   version           INTEGER
 );
@@ -80,8 +80,8 @@ CREATE INDEX IX_employer_office_id ON employer (office_id);
 CREATE TABLE IF NOT EXISTS document (
   id           INTEGER PRIMARY KEY AUTO_INCREMENT,
   type_id      INTEGER NOT NULL,
-  number       VARCHAR (20) NOT NULL,
-  date         DATE NOT NULL
+  number       VARCHAR (20),
+  date         DATE
 );
 
 ALTER TABLE employer ADD FOREIGN KEY (document_id) REFERENCES document(id);
@@ -106,7 +106,7 @@ CREATE INDEX IX_document_type_id ON document (type_id);
 --   name  название
 CREATE TABLE IF NOT EXISTS country (
   id    INTEGER PRIMARY KEY AUTO_INCREMENT,
-  code  VARCHAR (3) NOT NULL,
+  code  VARCHAR (3) NOT NULL UNIQUE,
   name  VARCHAR (100) NOT NULL
 );
 

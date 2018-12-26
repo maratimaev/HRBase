@@ -70,14 +70,14 @@ public class Employer {
      * Документ, удостоверяющий личность
      */
     @OneToOne
-    @JoinColumn(name = "document_id", nullable = false)
+    @JoinColumn(name = "document_id")
     private Document document;
 
     /**
      * Гражданство
      */
     @OneToOne
-    @JoinColumn(name = "citizenship_id", nullable = false)
+    @JoinColumn(name = "citizenship_id")
     private Country citizenship;
 
     /**
@@ -152,12 +152,12 @@ public class Employer {
         this.phone = phone;
     }
 
-    public boolean isIdentified() {
+    public boolean getIsIdentified() {
         return isIdentified;
     }
 
-    public void setIdentified(boolean identified) {
-        isIdentified = identified;
+    public void setIsIdentified(boolean isIdentified) {
+        this.isIdentified = isIdentified;
     }
 
     public Country getCitizenship() {

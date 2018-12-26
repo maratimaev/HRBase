@@ -7,12 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.bellintegrator.hrbase.entity.Organization;
 import ru.bellintegrator.hrbase.entity.mapper.MapperFacade;
-import ru.bellintegrator.hrbase.exception.CantFindById;
-import ru.bellintegrator.hrbase.exception.CantFindByNameInnActive;
-import ru.bellintegrator.hrbase.exception.CantSaveNewOrganization;
-import ru.bellintegrator.hrbase.exception.CantUpdateOrganization;
+import ru.bellintegrator.hrbase.exception.CantFindByParam;
+import ru.bellintegrator.hrbase.exception.CantSaveNewObject;
+import ru.bellintegrator.hrbase.exception.CantUpdateObject;
 import ru.bellintegrator.hrbase.repository.OrganizationRepository;
-import ru.bellintegrator.hrbase.service.specification.OrganizationSpecification;
 import ru.bellintegrator.hrbase.view.organization.OrganizationView;
 import ru.bellintegrator.hrbase.view.result.Wrapper;
 
@@ -24,7 +22,7 @@ import java.util.Optional;
  */
 
 @Service
-public class OrganizationServiceImpl implements OrganizationService {
+public class OrganizationServiceImpl implements GenericService<OrganizationView, Organization> {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationServiceImpl.class.getName());
 
     @Autowired
@@ -37,20 +35,20 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    public Wrapper<OrganizationView> findOrganizationById(String id) {
-        return new Wrapper<>(mapperFacade.map(getOrgById(id), OrganizationView.class));
+    public Wrapper<OrganizationView> find(String id) {
+        return new Wrapper<>(mapperFacade.map(getById(id), OrganizationView.class));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Wrapper<OrganizationView> getOrganizations(OrganizationView orgView) {
+    public Wrapper<OrganizationView> list(OrganizationView orgView) {
         List<Organization> list = organizationRepository.findAll(
-                OrganizationSpecification.listBy(orgView.getName(), orgView.getInn(), orgView.getIsActive()));
+                Specifications.listBy(orgView.getName(), orgView.getInn(), orgView.getIsActive()));
         if (list.isEmpty()) {
             LOGGER.error(String.format("Can't find organization by name=%s, inn=%s, isActive=%s", orgView.getName(), orgView.getInn(), orgView.getIsActive()));
-            throw new CantFindByNameInnActive(orgView.getName(), orgView.getInn(), orgView.getIsActive());
+            throw new CantFindByParam(String.format("name=%s, inn=%s, isActive=%s", orgView.getName(), orgView.getInn(), orgView.getIsActive()));
         }
         LOGGER.debug(String.format("Find organizations \n %s", mapperFacade.mapAsList(list, OrganizationView.class)));
         return new Wrapper<>(mapperFacade.mapAsList(list, OrganizationView.class));
@@ -60,12 +58,12 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    public void saveOrganization(OrganizationView orgView) {
+    public void save(OrganizationView orgView) {
         LOGGER.debug(String.format("Save organizations \n %s", orgView.toString()));
         try {
             organizationRepository.saveAndFlush(mapperFacade.map(orgView, Organization.class));
         } catch (Exception ex) {
-            throw new CantSaveNewOrganization();
+            throw new CantSaveNewObject("organization");
         }
     }
 
@@ -74,30 +72,31 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     @Transactional
-    public void updateOrganization(OrganizationView orgView) {
-        Organization organization = getOrgById(orgView.getId());
+    public void update(OrganizationView orgView) {
+        LOGGER.debug(String.format("Update organizations \n %s", orgView.toString()));
+        Organization organization = getById(orgView.getId());
         mapperFacade.map(orgView, organization);
         try {
             organizationRepository.saveAndFlush(organization);
         } catch (Exception ex) {
-            throw new CantUpdateOrganization();
+            throw new CantUpdateObject("organization");
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public Organization getOrgById(String sid) {
+    public Organization getById(String sid) {
         int id;
         try {
             id = Integer.parseInt(sid);
         } catch (NumberFormatException ex) {
-            throw new CantFindById(String.format("wrong organization convert id=%s", sid));
+            throw new CantFindByParam(String.format("wrong organization convert id=%s", sid));
         }
         Optional<Organization> optional = organizationRepository.findById(id);
         LOGGER.debug(String.format("Find organization by id=%s \n result: %s", id, optional));
         if (!optional.isPresent()) {
-            throw new CantFindById(String.format("no such organization id=%s", id));
+            throw new CantFindByParam(String.format("no such organization id=%s", id));
         }
         return optional.get();
     }

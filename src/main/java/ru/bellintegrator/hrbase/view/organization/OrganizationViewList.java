@@ -25,7 +25,7 @@ public class OrganizationViewList extends OrganizationView {
     /**
      * Признак активности
      */
-    @Pattern(regexp = "false|true")
+    @Pattern(regexp = "false|true+$|^$")
     private String isActive;
 
     @Override

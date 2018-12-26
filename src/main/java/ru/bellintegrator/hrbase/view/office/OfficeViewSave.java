@@ -29,7 +29,7 @@ public class OfficeViewSave extends OfficeView {
     /**
      * Признак активности
      */
-    @Pattern(regexp = "false|true")
+    @Pattern(regexp = "false|true+$|^$")
     private String isActive;
 
     @NotEmpty

@@ -35,15 +35,23 @@ public class Document {
     /**
      * Номер документа
      */
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private String number;
 
     /**
      * Дата выдачи документа
      */
-    @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date date;
+
+    public Document() {
+    }
+
+    public Document(DocumentType documentType, String number, Date date) {
+        this.documentType = documentType;
+        this.number = number;
+        this.date = date;
+    }
 
     public int getId() {
         return id;

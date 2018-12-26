@@ -42,4 +42,15 @@ public class MapperFacadeImpl implements MapperFacade {
         return mapperFactory.getMapperFacade().mapAsList(source, destinationClass);
     }
 
+//    public EmployerView mapToEmployerView(Employer employer, Document document, EmployerView employerView) {
+//        mapperFactory.classMap(Employer.class, EmployerView.class)
+//                .field("firstName", "firstName").register();
+//        mapperFactory.classMap(Document.class, EmployerView.class)
+//                .field("number", "docNumber").register();
+//
+//        mapperFactory.getMapperFacade(Employer.class, EmployerView.class).map(employer, employerView);
+//        mapperFactory.getMapperFacade(Document.class, EmployerView.class).map(document, employerView);
+//
+//        return employerView;
+//    }
 }

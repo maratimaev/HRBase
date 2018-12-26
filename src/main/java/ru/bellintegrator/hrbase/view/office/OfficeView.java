@@ -86,4 +86,16 @@ public class OfficeView {
     public void setOrgId(String orgId) {
         this.orgId = orgId;
     }
+
+    @Override
+    public String toString() {
+        return "OfficeView{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", isActive='" + isActive + '\'' +
+                ", orgId='" + orgId + '\'' +
+                '}';
+    }
 }

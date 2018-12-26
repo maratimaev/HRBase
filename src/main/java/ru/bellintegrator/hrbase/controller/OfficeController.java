@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.bellintegrator.hrbase.entity.Office;
+import ru.bellintegrator.hrbase.exception.OrganizationsIdMustBeEquals;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;
-import ru.bellintegrator.hrbase.service.OfficeService;
+import ru.bellintegrator.hrbase.service.GenericService;
+import ru.bellintegrator.hrbase.view.office.OfficeView;
 import ru.bellintegrator.hrbase.view.office.OfficeViewList;
 import ru.bellintegrator.hrbase.view.office.OfficeViewSave;
 import ru.bellintegrator.hrbase.view.office.OfficeViewUpdate;
@@ -35,7 +38,7 @@ public class OfficeController {
     private static final Logger LOGGER = LoggerFactory.getLogger(OfficeController.class.getName());
 
     @Autowired
-    private OfficeService officeService;
+    private GenericService<OfficeView, Office> officeService;
 
     /** Поиск офиса по id
      * @param id офиса
@@ -45,7 +48,7 @@ public class OfficeController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Result> officeById(@PathVariable String id) {
         LOGGER.debug(String.format("Find office by id=%s", id));
-        return new ResponseEntity<>(officeService.findOfficeById(id), HttpStatus.OK);
+        return new ResponseEntity<>(officeService.find(id), HttpStatus.OK);
     }
 
     /** Поиск офиса по параметрам
@@ -56,6 +59,9 @@ public class OfficeController {
     @PostMapping(value = "/list/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Result> getOrganizations(@RequestBody @Valid OfficeViewList officeViewList,
                                                    @PathVariable String id, BindingResult bindingResult) {
+        if (!id.equals(officeViewList.getOrgId())) {
+            throw new OrganizationsIdMustBeEquals(id, officeViewList.getOrgId());
+        }
         Result result;
         HttpStatus status = HttpStatus.OK;
         if (bindingResult.hasErrors()) {
@@ -66,7 +72,7 @@ public class OfficeController {
         } else {
             LOGGER.debug(String.format("Get offices by organization id=%s, offices name=%s, phone=%s, isActive=%s",
                     id, officeViewList.getName(), officeViewList.getPhone(), officeViewList.getIsActive()));
-            result = officeService.getOffices(id, officeViewList);
+            result = officeService.list(officeViewList);
         }
         return new ResponseEntity<>(result, status);
     }
@@ -86,7 +92,7 @@ public class OfficeController {
             status = HttpStatus.NOT_ACCEPTABLE;
         } else {
             LOGGER.debug(String.format("Save office with fields \n %s", officeViewSave.toString()));
-            officeService.saveOffice(officeViewSave);
+            officeService.save(officeViewSave);
         }
         return new ResponseEntity<>(result, status);
     }
@@ -107,7 +113,7 @@ public class OfficeController {
             status = HttpStatus.NOT_ACCEPTABLE;
         } else {
             LOGGER.debug(String.format("Update office with fields \n %s", officeViewUpdate.toString()));
-            officeService.updateOffice(officeViewUpdate);
+            officeService.update(officeViewUpdate);
         }
         return new ResponseEntity<>(result, status);
     }

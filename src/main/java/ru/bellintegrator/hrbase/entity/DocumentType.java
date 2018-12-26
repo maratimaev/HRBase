@@ -1,14 +1,13 @@
 package ru.bellintegrator.hrbase.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -29,6 +28,9 @@ public class DocumentType {
      */
     @Column(length = 2, nullable = false)
     private String code;
+
+    @OneToMany(mappedBy="documentType", cascade = CascadeType.ALL)
+    private Set<Document> documents;
 
     /**
      * Название типа документа
@@ -54,5 +56,13 @@ public class DocumentType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
     }
 }

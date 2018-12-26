@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bellintegrator.hrbase.entity.Organization;
+import ru.bellintegrator.hrbase.entity.Employer;
 import ru.bellintegrator.hrbase.profile.WrapperProfile;
 import ru.bellintegrator.hrbase.service.GenericService;
-import ru.bellintegrator.hrbase.view.organization.OrganizationView;
-import ru.bellintegrator.hrbase.view.organization.OrganizationViewList;
-import ru.bellintegrator.hrbase.view.organization.OrganizationViewSave;
-import ru.bellintegrator.hrbase.view.organization.OrganizationViewUpdate;
+import ru.bellintegrator.hrbase.view.employer.EmployerView;
+import ru.bellintegrator.hrbase.view.employer.EmployerViewList;
+import ru.bellintegrator.hrbase.view.employer.EmployerViewSave;
+import ru.bellintegrator.hrbase.view.employer.EmployerViewUpdate;
 import ru.bellintegrator.hrbase.view.result.Error;
 import ru.bellintegrator.hrbase.view.result.Result;
 import ru.bellintegrator.hrbase.view.result.Success;
@@ -29,86 +29,85 @@ import ru.bellintegrator.hrbase.view.result.Success;
 import javax.validation.Valid;
 
 /**
- * Контроллеры для работы с организациями
+ * Контроллеры для работы с сотрудниками
  */
 @RestController
-@RequestMapping(value = "/organization")
-public class OrganizationController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationController.class.getName());
+@RequestMapping(value = "/user")
+public class EmployerController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmployerController.class.getName());
 
     @Autowired
-    private GenericService<OrganizationView, Organization> organizationService;
+    private GenericService<EmployerView, Employer> employerService;
 
-    /** Поиск организации по id
-     * @param id организации
-     * @return организация внутри Wrapper
+    /** Поиск сотрудника по id
+     * @param id сотрудника
+     * @return сотрудник внутри Wrapper
      */
     @JsonView(WrapperProfile.Full.class)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> organizationById(@PathVariable String id) {
-        LOGGER.debug(String.format("Find organization by id=%s", id));
-        return new ResponseEntity<>(organizationService.find(id), HttpStatus.OK);
+    public ResponseEntity<Result> employerById(@PathVariable String id) {
+        LOGGER.debug(String.format("Find employer by id=%s", id));
+        return new ResponseEntity<> (employerService.find(id), HttpStatus.OK);
     }
 
-    /** Поиск организаций по параметрам
-     * @param orgViewList объект json с constraints по полям
-     * @return список организаций внутри Wrapper<OrganizationView>
+    /** Поиск сотрудника по параметрам
+     * @param emplViewList объект json с constraints по полям
+     * @return список офисов внутри Wrapper<EmployerView>
      */
     @JsonView(WrapperProfile.Short.class)
     @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> getOrganizations(@RequestBody @Valid OrganizationViewList orgViewList, BindingResult bindingResult) {
+    public ResponseEntity<Result> getEmployers(@RequestBody @Valid EmployerViewList emplViewList, BindingResult bindingResult) {
         Result result;
         HttpStatus status = HttpStatus.OK;
         if (bindingResult.hasErrors()) {
-            LOGGER.error(String.format("Can't find organizations : \n %s", bindingResult.toString()));
+            LOGGER.error(String.format("Can't find employers : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
             result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
             status = HttpStatus.NOT_ACCEPTABLE;
         } else {
-            LOGGER.debug(String.format("Get organizations by name=%s, inn=%s, isActive=%s", orgViewList.getName(), orgViewList.getInn(), orgViewList.getIsActive()));
-            result = organizationService.list(orgViewList);
+            LOGGER.debug(String.format("Get employer=%s", emplViewList.toString()));
+            result = employerService.list(emplViewList);
         }
         return new ResponseEntity<>(result, status);
     }
 
-
-    /** Сохранение новой организации в БД
-     * @param orgViewSave объект json c constraints
+    /** Сохранение нового сотрудника в БД
+     * @param emplViewSave объект json c constraints
      * @return результат success/error
      */
     @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> saveOrganization(@RequestBody @Valid OrganizationViewSave orgViewSave, BindingResult bindingResult) {
+    public ResponseEntity<Result> saveEmployer(@RequestBody @Valid EmployerViewSave emplViewSave, BindingResult bindingResult) {
         Result result = new Success();
         HttpStatus status = HttpStatus.CREATED;
         if (bindingResult.hasErrors()) {
-            LOGGER.error(String.format("Can't save organization : \n %s", bindingResult.toString()));
+            LOGGER.error(String.format("Can't save employer : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
             result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
             status = HttpStatus.NOT_ACCEPTABLE;
         } else {
-            LOGGER.debug(String.format("Save organization with fields \n %s", orgViewSave.toString()));
-            organizationService.save(orgViewSave);
+            LOGGER.debug(String.format("Save employer with fields \n %s", emplViewSave.toString()));
+            employerService.save(emplViewSave);
         }
         return new ResponseEntity<>(result, status);
     }
 
-    /** Изменение параметров организации
-     * @param orgViewUpdate объект json
+    /** Изменение параметров сотрудника
+     * @param emplViewUpdate объект json
      * @param bindingResult результат валидации
      * @return результат
      */
     @PostMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> updateOrganization(@RequestBody @Valid OrganizationViewUpdate orgViewUpdate, BindingResult bindingResult) {
+    public ResponseEntity<Result> updateEmployer(@RequestBody @Valid EmployerViewUpdate emplViewUpdate, BindingResult bindingResult) {
         Result result = new Success();
         HttpStatus status = HttpStatus.ACCEPTED;
         if (bindingResult.hasErrors()) {
-            LOGGER.error(String.format("Can't update organization : \n %s", bindingResult.toString()));
+            LOGGER.error(String.format("Can't update user : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
             result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
             status = HttpStatus.NOT_ACCEPTABLE;
         } else {
-            LOGGER.debug(String.format("Update organization with fields \n %s", orgViewUpdate.toString()));
-            organizationService.update(orgViewUpdate);
+            LOGGER.debug(String.format("Update user with fields \n %s", emplViewUpdate.toString()));
+            employerService.update(emplViewUpdate);
         }
         return new ResponseEntity<>(result, status);
     }
