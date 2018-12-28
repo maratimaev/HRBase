@@ -14,7 +14,6 @@ import ru.bellintegrator.hrbase.exception.CantUpdateObject;
 import ru.bellintegrator.hrbase.repository.OfficeRepository;
 import ru.bellintegrator.hrbase.view.office.OfficeView;
 import ru.bellintegrator.hrbase.view.organization.OrganizationView;
-import ru.bellintegrator.hrbase.view.result.Wrapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,19 +39,19 @@ public class OfficeServiceImpl implements GenericService<OfficeView, Office> {
      * {@inheritDoc}
      */
     @Override
-    public Wrapper<OfficeView> find(String id) {
+    public OfficeView find(String id) {
         Office office = getById(id);
         if (office == null) {
             throw new CantFindByParam(String.format(" no such office id=%s", id));
         }
-        return new Wrapper<>(mapperFacade.map(office, OfficeView.class));
+        return mapperFacade.map(office, OfficeView.class);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Wrapper<OfficeView> list(OfficeView officeView) {
+    public List<OfficeView> list(OfficeView officeView) {
         List<Office> list = officeRepository.findAll(
                 Specifications.listBy(officeView.getOrgId(), officeView.getName(), officeView.getPhone(), officeView.getIsActive()));
         if (list.isEmpty()) {
@@ -62,7 +61,7 @@ public class OfficeServiceImpl implements GenericService<OfficeView, Office> {
                     officeView.getName(), officeView.getPhone(), officeView.getIsActive(), officeView.getOrgId()));
         }
         LOGGER.debug(String.format("Find organizations \n %s", mapperFacade.mapAsList(list, OfficeView.class)));
-        return new Wrapper<>(mapperFacade.mapAsList(list, OfficeView.class));
+        return mapperFacade.mapAsList(list, OfficeView.class);
     }
 
     /**

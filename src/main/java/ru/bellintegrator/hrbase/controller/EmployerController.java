@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,74 +40,70 @@ public class EmployerController {
 
     /** Поиск сотрудника по id
      * @param id сотрудника
-     * @return сотрудник внутри Wrapper
+     * @return  View сотрудника
      */
     @JsonView(WrapperProfile.Full.class)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> employerById(@PathVariable String id) {
+    public EmployerView employerById(@PathVariable String id) {
         LOGGER.debug(String.format("Find employer by id=%s", id));
-        return new ResponseEntity<> (employerService.find(id), HttpStatus.OK);
+        return employerService.find(id);
     }
 
     /** Поиск сотрудника по параметрам
      * @param emplViewList объект json с constraints по полям
-     * @return список офисов внутри Wrapper<EmployerView>
+     * @return список офисов внутри List<EmployerView> или Error
      */
     @JsonView(WrapperProfile.Short.class)
     @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> getEmployers(@RequestBody @Valid EmployerViewList emplViewList, BindingResult bindingResult) {
-        Result result;
-        HttpStatus status = HttpStatus.OK;
+    public Object getEmployers(@RequestBody @Valid EmployerViewList emplViewList, BindingResult bindingResult) {
+        Object result;
         if (bindingResult.hasErrors()) {
             LOGGER.error(String.format("Can't find employers : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
-            status = HttpStatus.NOT_ACCEPTABLE;
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
         } else {
             LOGGER.debug(String.format("Get employer=%s", emplViewList.toString()));
             result = employerService.list(emplViewList);
         }
-        return new ResponseEntity<>(result, status);
+        return result;
     }
 
     /** Сохранение нового сотрудника в БД
      * @param emplViewSave объект json c constraints
      * @return результат success/error
      */
+    @JsonView(WrapperProfile.Data.class)
     @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> saveEmployer(@RequestBody @Valid EmployerViewSave emplViewSave, BindingResult bindingResult) {
+    public Result saveEmployer(@RequestBody @Valid EmployerViewSave emplViewSave, BindingResult bindingResult) {
         Result result = new Success();
-        HttpStatus status = HttpStatus.CREATED;
         if (bindingResult.hasErrors()) {
             LOGGER.error(String.format("Can't save employer : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
-            status = HttpStatus.NOT_ACCEPTABLE;
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
         } else {
             LOGGER.debug(String.format("Save employer with fields \n %s", emplViewSave.toString()));
             employerService.save(emplViewSave);
         }
-        return new ResponseEntity<>(result, status);
+        return result;
     }
 
     /** Изменение параметров сотрудника
      * @param emplViewUpdate объект json
      * @param bindingResult результат валидации
-     * @return результат
+     * @return результат uccess/error
      */
+    @JsonView(WrapperProfile.Data.class)
     @PostMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> updateEmployer(@RequestBody @Valid EmployerViewUpdate emplViewUpdate, BindingResult bindingResult) {
+    public Result updateEmployer(@RequestBody @Valid EmployerViewUpdate emplViewUpdate, BindingResult bindingResult) {
         Result result = new Success();
-        HttpStatus status = HttpStatus.ACCEPTED;
         if (bindingResult.hasErrors()) {
             LOGGER.error(String.format("Can't update user : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
-            status = HttpStatus.NOT_ACCEPTABLE;
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
         } else {
             LOGGER.debug(String.format("Update user with fields \n %s", emplViewUpdate.toString()));
             employerService.update(emplViewUpdate);
         }
-        return new ResponseEntity<>(result, status);
+        return result;
     }
 }

@@ -1,5 +1,9 @@
 package ru.bellintegrator.hrbase.entity.mapper;
 
+import ru.bellintegrator.hrbase.entity.Document;
+import ru.bellintegrator.hrbase.entity.Employer;
+import ru.bellintegrator.hrbase.view.employer.EmployerView;
+
 import java.util.List;
 
 /**
@@ -38,4 +42,7 @@ public interface MapperFacade {
      * @return
      */
     <S, D> List<D> mapAsList(Iterable<S> source, Class<D> destinationClass);
+
+    Document mapToDocument(EmployerView employerView, Document document);
+    EmployerView mapToEmployer(Employer employer, EmployerView employerView);
 }

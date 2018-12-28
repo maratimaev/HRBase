@@ -73,9 +73,6 @@ public class EmployerViewUpdate extends EmployerView {
     @Pattern(regexp = "false|true+$|^$")
     private String isIdentified;
 
-    @Size(max = 100)
-    private String citizenshipName;
-
     @Pattern(regexp = "\\d{0,3}")
     private String citizenshipCode;
 
@@ -177,16 +174,6 @@ public class EmployerViewUpdate extends EmployerView {
     @Override
     public void setIsIdentified(String isIdentified) {
         this.isIdentified = isIdentified;
-    }
-
-    @Override
-    public String getCitizenshipName() {
-        return citizenshipName;
-    }
-
-    @Override
-    public void setCitizenshipName(String citizenshipName) {
-        this.citizenshipName = citizenshipName;
     }
 
     @Override

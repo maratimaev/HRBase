@@ -12,7 +12,6 @@ import ru.bellintegrator.hrbase.exception.CantSaveNewObject;
 import ru.bellintegrator.hrbase.exception.CantUpdateObject;
 import ru.bellintegrator.hrbase.repository.OrganizationRepository;
 import ru.bellintegrator.hrbase.view.organization.OrganizationView;
-import ru.bellintegrator.hrbase.view.result.Wrapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,15 +34,15 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
      * {@inheritDoc}
      */
     @Override
-    public Wrapper<OrganizationView> find(String id) {
-        return new Wrapper<>(mapperFacade.map(getById(id), OrganizationView.class));
+    public OrganizationView find(String id) {
+        return mapperFacade.map(getById(id), OrganizationView.class);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Wrapper<OrganizationView> list(OrganizationView orgView) {
+    public List<OrganizationView> list(OrganizationView orgView) {
         List<Organization> list = organizationRepository.findAll(
                 Specifications.listBy(orgView.getName(), orgView.getInn(), orgView.getIsActive()));
         if (list.isEmpty()) {
@@ -51,7 +50,7 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
             throw new CantFindByParam(String.format("name=%s, inn=%s, isActive=%s", orgView.getName(), orgView.getInn(), orgView.getIsActive()));
         }
         LOGGER.debug(String.format("Find organizations \n %s", mapperFacade.mapAsList(list, OrganizationView.class)));
-        return new Wrapper<>(mapperFacade.mapAsList(list, OrganizationView.class));
+        return mapperFacade.mapAsList(list, OrganizationView.class);
     }
 
     /**

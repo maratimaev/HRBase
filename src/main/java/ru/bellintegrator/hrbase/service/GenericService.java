@@ -1,6 +1,6 @@
 package ru.bellintegrator.hrbase.service;
 
-import ru.bellintegrator.hrbase.view.result.Wrapper;
+import java.util.List;
 
 /**
  * Сервисы
@@ -10,13 +10,13 @@ public interface GenericService<T, E> {
      * @param id объекта
      * @return обертка над view
      */
-    Wrapper<T> find(String id);
+    T find(String id);
 
     /** Поиск в БД по параметрам
      * @param t входящий объект json c constraints
      * @return обертка над view
      */
-    Wrapper<T> list(T t);
+    List<T> list(T t);
 
     /** Сохранение нового объекта в БД
      * @param t входящий объект json c constraints

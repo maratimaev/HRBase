@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,34 +40,32 @@ public class OrganizationController {
 
     /** Поиск организации по id
      * @param id организации
-     * @return организация внутри Wrapper
+     * @return View организации
      */
     @JsonView(WrapperProfile.Full.class)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> organizationById(@PathVariable String id) {
+    public OrganizationView organizationById(@PathVariable String id) {
         LOGGER.debug(String.format("Find organization by id=%s", id));
-        return new ResponseEntity<>(organizationService.find(id), HttpStatus.OK);
+        return organizationService.find(id);
     }
 
     /** Поиск организаций по параметрам
      * @param orgViewList объект json с constraints по полям
-     * @return список организаций внутри Wrapper<OrganizationView>
+     * @return список организаций внутри List<OrganizationView> или Error
      */
     @JsonView(WrapperProfile.Short.class)
     @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> getOrganizations(@RequestBody @Valid OrganizationViewList orgViewList, BindingResult bindingResult) {
-        Result result;
-        HttpStatus status = HttpStatus.OK;
+    public Object getOrganizations(@RequestBody @Valid OrganizationViewList orgViewList, BindingResult bindingResult) {
+        Object result;
         if (bindingResult.hasErrors()) {
             LOGGER.error(String.format("Can't find organizations : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
-            status = HttpStatus.NOT_ACCEPTABLE;
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
         } else {
             LOGGER.debug(String.format("Get organizations by name=%s, inn=%s, isActive=%s", orgViewList.getName(), orgViewList.getInn(), orgViewList.getIsActive()));
             result = organizationService.list(orgViewList);
         }
-        return new ResponseEntity<>(result, status);
+        return result;
     }
 
 
@@ -76,40 +73,38 @@ public class OrganizationController {
      * @param orgViewSave объект json c constraints
      * @return результат success/error
      */
+    @JsonView(WrapperProfile.Data.class)
     @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> saveOrganization(@RequestBody @Valid OrganizationViewSave orgViewSave, BindingResult bindingResult) {
+    public Result saveOrganization(@RequestBody @Valid OrganizationViewSave orgViewSave, BindingResult bindingResult) {
         Result result = new Success();
-        HttpStatus status = HttpStatus.CREATED;
         if (bindingResult.hasErrors()) {
             LOGGER.error(String.format("Can't save organization : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
-            status = HttpStatus.NOT_ACCEPTABLE;
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
         } else {
             LOGGER.debug(String.format("Save organization with fields \n %s", orgViewSave.toString()));
             organizationService.save(orgViewSave);
         }
-        return new ResponseEntity<>(result, status);
+        return result;
     }
 
     /** Изменение параметров организации
      * @param orgViewUpdate объект json
      * @param bindingResult результат валидации
-     * @return результат
+     * @return результат success/error
      */
+    @JsonView(WrapperProfile.Data.class)
     @PostMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Result> updateOrganization(@RequestBody @Valid OrganizationViewUpdate orgViewUpdate, BindingResult bindingResult) {
+    public Result updateOrganization(@RequestBody @Valid OrganizationViewUpdate orgViewUpdate, BindingResult bindingResult) {
         Result result = new Success();
-        HttpStatus status = HttpStatus.ACCEPTED;
         if (bindingResult.hasErrors()) {
             LOGGER.error(String.format("Can't update organization : \n %s", bindingResult.toString()));
             FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()));
-            status = HttpStatus.NOT_ACCEPTABLE;
+            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
         } else {
             LOGGER.debug(String.format("Update organization with fields \n %s", orgViewUpdate.toString()));
             organizationService.update(orgViewUpdate);
         }
-        return new ResponseEntity<>(result, status);
+        return result;
     }
 }

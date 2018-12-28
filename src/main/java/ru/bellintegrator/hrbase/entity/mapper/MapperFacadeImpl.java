@@ -3,6 +3,11 @@ package ru.bellintegrator.hrbase.entity.mapper;
 import ma.glasnost.orika.MapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.bellintegrator.hrbase.entity.Country;
+import ru.bellintegrator.hrbase.entity.Document;
+import ru.bellintegrator.hrbase.entity.DocumentType;
+import ru.bellintegrator.hrbase.entity.Employer;
+import ru.bellintegrator.hrbase.view.employer.EmployerView;
 
 import java.util.List;
 
@@ -13,9 +18,11 @@ import java.util.List;
 public class MapperFacadeImpl implements MapperFacade {
     private final MapperFactory mapperFactory;
 
+
     @Autowired
     public MapperFacadeImpl(MapperFactory mapperFactory) {
         this.mapperFactory = mapperFactory;
+        mapperFactory.getConverterFactory().registerConverter("DateToStringConverter", new DateToStringConverter("yyyy-MM-dd"));
     }
 
     /**
@@ -42,15 +49,35 @@ public class MapperFacadeImpl implements MapperFacade {
         return mapperFactory.getMapperFacade().mapAsList(source, destinationClass);
     }
 
-//    public EmployerView mapToEmployerView(Employer employer, Document document, EmployerView employerView) {
-//        mapperFactory.classMap(Employer.class, EmployerView.class)
-//                .field("firstName", "firstName").register();
-//        mapperFactory.classMap(Document.class, EmployerView.class)
-//                .field("number", "docNumber").register();
-//
-//        mapperFactory.getMapperFacade(Employer.class, EmployerView.class).map(employer, employerView);
-//        mapperFactory.getMapperFacade(Document.class, EmployerView.class).map(document, employerView);
-//
-//        return employerView;
-//    }
+    @Override
+    public Document mapToDocument(EmployerView employerView, Document document) {
+        mapperFactory.classMap(EmployerView.class, Document.class)
+                .field("docNumber", "number")
+                .fieldMap("docDate", "date")
+                .converter("DateToStringConverter").add()
+                .register();
+        mapperFactory.getMapperFacade(EmployerView.class, Document.class).map(employerView, document);
+        return document;
+    }
+
+    public EmployerView mapToEmployer(Employer employer, EmployerView employerView) {
+        mapperFactory.classMap(Document.class, EmployerView.class)
+                .field("number", "docNumber")
+                .fieldMap("date", "docDate")
+                .converter("DateToStringConverter").add()
+                .register();
+        mapperFactory.classMap(DocumentType.class, EmployerView.class)
+                .field("code", "docCode")
+                .field("name", "docName")
+                .register();
+        mapperFactory.classMap(Country.class, EmployerView.class)
+                .field("code", "citizenshipCode")
+                .field("name", "citizenshipName")
+                .register();
+        mapperFactory.getMapperFacade(Employer.class, EmployerView.class).map(employer, employerView);
+        mapperFactory.getMapperFacade(Document.class, EmployerView.class).map(employer.getDocument(), employerView);
+        mapperFactory.getMapperFacade(DocumentType.class, EmployerView.class).map(employer.getDocument().getDocumentType(), employerView);
+        mapperFactory.getMapperFacade(Country.class, EmployerView.class).map(employer.getCitizenship(), employerView);
+        return employerView;
+    }
 }

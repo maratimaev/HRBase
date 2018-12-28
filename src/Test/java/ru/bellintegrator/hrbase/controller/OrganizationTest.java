@@ -158,7 +158,7 @@ public class OrganizationTest {
         OrganizationView orgView = getSampleOrganization();
 
         ResponseEntity<Success> saveResponse = restTemplate.postForEntity(saveUrl, orgView, Success.class);
-        assertThat(saveResponse.getStatusCode(), is(HttpStatus.CREATED));
+        assertThat(saveResponse.getStatusCode(), is(HttpStatus.OK));
         assertThat(saveResponse.getBody(), is(notNullValue()));
         assertThat(saveResponse.getBody().getResult(), is("success"));
 
@@ -215,7 +215,7 @@ public class OrganizationTest {
         orgView.setInn("987654321");
 
         ResponseEntity<Success> response = restTemplate.postForEntity(url, orgView, Success.class);
-        assertThat(response.getStatusCode(), is(HttpStatus.ACCEPTED));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), is(notNullValue()));
         assertThat(response.getBody().getResult(), is("success"));
         String getUrl = String.format("http://localhost:%s/organization/1", port);

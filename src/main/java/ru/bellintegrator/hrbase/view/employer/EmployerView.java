@@ -1,10 +1,6 @@
 package ru.bellintegrator.hrbase.view.employer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.entity.Country;
-import ru.bellintegrator.hrbase.entity.Document;
-import ru.bellintegrator.hrbase.entity.Office;
 import ru.bellintegrator.hrbase.profile.Profile;
 
 /**
@@ -17,11 +13,10 @@ public class EmployerView {
     @JsonView(Profile.Short.class)
     private String id;
 
-    /**
-     * Оффис сотрудника
-     */
-    private Office office;
 
+    /**
+     * Id офиса сотрудника
+     */
     private String officeId;
 
     /**
@@ -60,30 +55,44 @@ public class EmployerView {
     private String phone;
 
     /**
-     * Документ, удостоверяющий личность
+     * Код типа документа
      */
-    private Document document;
-
     private String docCode;
 
+    /**
+     * Название документа
+     */
+    @JsonView(Profile.Full.class)
     private String docName;
 
+    /**
+     * Номер документа
+     */
+    @JsonView(Profile.Full.class)
     private String docNumber;
 
+    /**
+     * Дата документа
+     */
+    @JsonView(Profile.Full.class)
     private String docDate;
 
     /**
-     * Гражданство
+     * Гржаданство
      */
-    private Country citizenship;
-
+    @JsonView(Profile.Full.class)
     private String citizenshipName;
 
+    /**
+     * Код страны
+     */
+    @JsonView(Profile.Full.class)
     private String citizenshipCode;
 
     /**
      * Признак идентификации
      */
+    @JsonView(Profile.Full.class)
     private String isIdentified;
 
     public String getId() {
@@ -94,12 +103,12 @@ public class EmployerView {
         this.id = id;
     }
 
-    public Office getOffice() {
-        return office;
+    public String getOfficeId() {
+        return officeId;
     }
 
-    public void setOffice(Office office) {
-        this.office = office;
+    public void setOfficeId(String officeId) {
+        this.officeId = officeId;
     }
 
     public String getFirstName() {
@@ -150,118 +159,60 @@ public class EmployerView {
         this.phone = phone;
     }
 
-    public String getIsIdentified() {
-        return isIdentified;
+    public String getDocCode() {
+        return docCode;
     }
 
-    public void setIsIdentified(String isIdentified) {
-        this.isIdentified = isIdentified;
+    public void setDocCode(String docCode) {
+        this.docCode = docCode;
     }
 
-    public Country getCitizenship() {
-        return citizenship;
-    }
-
-    public void setCitizenship(Country citizenship) {
-        this.citizenship = citizenship;
-    }
-
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
-    }
-
-    @JsonView(Profile.Full.class)
-    @JsonProperty("docName")
     public String getDocName() {
-        String result = null;
-        if (this.document != null) {
-            result = this.document.getDocumentType().getName();
-        }
-        return result;
+        return docName;
     }
 
     public void setDocName(String docName) {
         this.docName = docName;
     }
 
-    @JsonView(Profile.Full.class)
-    @JsonProperty("docNumber")
     public String getDocNumber() {
-        String result = null;
-        if (this.document != null) {
-            result = this.document.getNumber();
-        }
-        return result;
+        return docNumber;
     }
 
     public void setDocNumber(String docNumber) {
         this.docNumber = docNumber;
     }
 
-    @JsonView(Profile.Full.class)
-    @JsonProperty("docDate")
     public String getDocDate() {
-        String result = null;
-        if (this.document != null) {
-            result = this.document.getDate().toString();
-        }
-        return result;
+        return docDate;
     }
 
     public void setDocDate(String docDate) {
         this.docDate = docDate;
     }
 
-    @JsonView(Profile.Full.class)
-    @JsonProperty("citizenshipName")
     public String getCitizenshipName() {
-        String result = null;
-        if (this.citizenship != null) {
-            result = this.citizenship.getName();
-        }
-        return result;
+        return citizenshipName;
     }
 
     public void setCitizenshipName(String citizenshipName) {
         this.citizenshipName = citizenshipName;
     }
 
-    @JsonView(Profile.Full.class)
-    @JsonProperty("citizenshipCode")
     public String getCitizenshipCode() {
-        String result = null;
-        if (this.citizenship != null) {
-            result = this.citizenship.getCode();
-        }
-        return result;
+        return citizenshipCode;
     }
 
     public void setCitizenshipCode(String citizenshipCode) {
         this.citizenshipCode = citizenshipCode;
     }
 
-    public String getOfficeId() {
-        return officeId;
+    public String getIsIdentified() {
+        return isIdentified;
     }
 
-    public void setOfficeId(String officeId) {
-        this.officeId = officeId;
-    }
-
-    public String getDocCode() {
-        String result = null;
-        if (this.document != null) {
-            result = this.document.getDocumentType().getCode();
-        }
-        return result;
-    }
-
-    public void setDocCode(String docCode) {
-        this.docCode = docCode;
+    public void setIsIdentified(String isIdentified) {
+        this.isIdentified = isIdentified;
     }
 
     @Override
