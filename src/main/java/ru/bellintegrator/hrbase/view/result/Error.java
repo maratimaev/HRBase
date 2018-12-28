@@ -3,7 +3,7 @@ package ru.bellintegrator.hrbase.view.result;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.HttpStatus;
-import ru.bellintegrator.hrbase.profile.WrapperProfile;
+import ru.bellintegrator.hrbase.view.profile.WrapperProfile;
 
 /**
  * Возвращение сообщения об ошибке в виде json

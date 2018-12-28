@@ -61,17 +61,7 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(new Error(String.format("Date must be like 2001-01-30, get date=%s",
                 ex.getDate())), HttpStatus.NOT_FOUND);
     }
-
-    /** Обработка исключения при конвертировании строки в дату
-     * @param ex исключение
-     * @return Error, HttpStatus
-     */
-    @ExceptionHandler(WrongInputField.class)
-    public ResponseEntity<Error> handlerWrongInputField(WrongInputField ex) {
-        return new ResponseEntity<>(new Error(ex.getMessage()), ex.getHttpStatus());
-    }
-
-
+    
     /** Обработка прочих исключений
      * @param ex исключение
      * @return Error, HttpStatus

@@ -1,7 +1,7 @@
 package ru.bellintegrator.hrbase.view.organization;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.profile.Profile;
+import ru.bellintegrator.hrbase.view.profile.Profile;
 
 /**
  * Отображение даанных организации

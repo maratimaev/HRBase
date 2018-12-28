@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.profile;
+package ru.bellintegrator.hrbase.view.profile;
 
 /**
  * Профили JsonView для фильтрации полей объекта Wrapper

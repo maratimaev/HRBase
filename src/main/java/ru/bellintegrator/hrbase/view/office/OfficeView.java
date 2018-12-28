@@ -1,7 +1,7 @@
 package ru.bellintegrator.hrbase.view.office;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.profile.Profile;
+import ru.bellintegrator.hrbase.view.profile.Profile;
 
 /**
  * Сущность, связанная с таблицей Office

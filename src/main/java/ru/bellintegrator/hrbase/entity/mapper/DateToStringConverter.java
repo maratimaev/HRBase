@@ -21,6 +21,7 @@ package ru.bellintegrator.hrbase.entity.mapper;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
+import ru.bellintegrator.hrbase.exception.WrongDateFormat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,7 +87,7 @@ public class DateToStringConverter extends BidirectionalConverter<Date, String> 
         try {
             return getDateFormat().parse(source);
         } catch (ParseException e) {
-            return null;
+            throw new WrongDateFormat(source);
         }
     }
 

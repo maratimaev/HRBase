@@ -1,7 +1,7 @@
 package ru.bellintegrator.hrbase.view.employer;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.profile.Profile;
+import ru.bellintegrator.hrbase.view.profile.Profile;
 
 /**
  * Out View для employer
