@@ -121,15 +121,15 @@ public class OrganizationView {
 
     @Override
     public String toString() {
-        return "OrganizationView{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", inn='" + inn + '\'' +
-                ", kpp='" + kpp + '\'' +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                ", isActive='" + isActive + '\'' +
-                '}';
+        return "OrganizationView{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", fullName='" + fullName + '\''
+                + ", inn='" + inn + '\''
+                + ", kpp='" + kpp + '\''
+                + ", address='" + address + '\''
+                + ", phone='" + phone + '\''
+                + ", isActive='" + isActive + '\''
+                + '}';
     }
 }

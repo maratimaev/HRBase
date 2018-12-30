@@ -13,7 +13,6 @@ public class EmployerView {
     @JsonView(Profile.Short.class)
     private String id;
 
-
     /**
      * Id офиса сотрудника
      */
@@ -217,22 +216,22 @@ public class EmployerView {
 
     @Override
     public String toString() {
-        return "EmployerView{" +
-                "id='" + id + '\'' +
-                ", officeId='" + officeId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", secondName='" + secondName + '\'' +
-                ", position='" + position + '\'' +
-                ", phone='" + phone + '\'' +
-                ", docCode='" + docCode + '\'' +
-                ", docName='" + docName + '\'' +
-                ", docNumber='" + docNumber + '\'' +
-                ", docDate='" + docDate + '\'' +
-                ", citizenshipName='" + citizenshipName + '\'' +
-                ", citizenshipCode='" + citizenshipCode + '\'' +
-                ", isIdentified='" + isIdentified + '\'' +
-                '}';
+        return "EmployerView{"
+                + "id='" + id + '\''
+                + ", officeId='" + officeId + '\''
+                + ", firstName='" + firstName + '\''
+                + ", lastName='" + lastName + '\''
+                + ", middleName='" + middleName + '\''
+                + ", secondName='" + secondName + '\''
+                + ", position='" + position + '\''
+                + ", phone='" + phone + '\''
+                + ", docCode='" + docCode + '\''
+                + ", docName='" + docName + '\''
+                + ", docNumber='" + docNumber + '\''
+                + ", docDate='" + docDate + '\''
+                + ", citizenshipName='" + citizenshipName + '\''
+                + ", citizenshipCode='" + citizenshipCode + '\''
+                + ", isIdentified='" + isIdentified + '\''
+                + '}';
     }
 }

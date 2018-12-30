@@ -42,7 +42,7 @@ public class OfficeServiceImpl implements GenericService<OfficeView, Office> {
     public OfficeView find(String id) {
         Office office = getById(id);
         if (office == null) {
-            throw new CantFindByParam(String.format(" no such office id=%s", id));
+            throw new CantFindByParam(String.format("no such office id=%s", id));
         }
         return mapperFacade.map(office, OfficeView.class);
     }
@@ -114,7 +114,7 @@ public class OfficeServiceImpl implements GenericService<OfficeView, Office> {
         try {
             id = Integer.parseInt(sid);
         } catch (NumberFormatException ex) {
-            throw new CantFindByParam(String.format(" wrong office convert id=%s", sid));
+            throw new CantFindByParam(String.format("wrong office convert id=%s", sid));
         }
         Optional<Office> optional = officeRepository.findById(id);
         LOGGER.debug(String.format("Find office by id=%s \n result: %s", id, optional));

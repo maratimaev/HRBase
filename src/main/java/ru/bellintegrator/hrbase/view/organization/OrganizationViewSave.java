@@ -27,14 +27,14 @@ public class OrganizationViewSave extends OrganizationView {
      * Инн организации
      */
     @NotEmpty
-    @Size(max = 12)
+    @Pattern(regexp = "\\d{0,12}")
     private String inn;
 
     /**
      * КПП организации
      */
     @NotEmpty
-    @Size(max = 9)
+    @Pattern(regexp = "\\d{0,9}")
     private String kpp;
 
     /**

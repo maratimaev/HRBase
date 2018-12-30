@@ -44,7 +44,10 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
     private GenericGetByParamService<Country> citizenshipService;
 
     @Autowired
-    private DocumentTypeServiceImpl documentTypeService;
+    private GenericGetByNameService<Document> documentService;
+
+    @Autowired
+    private GenericGetByNameService<DocumentType> documentTypeService;
 
     @Autowired
     private MapperFacade mapperFacade;
@@ -59,13 +62,14 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
     /**
      * {@inheritDoc}
      */
-//    @Override
+    @Override
     public List<EmployerView> list(EmployerView employerView) {
         List<Employer> list = employerRepository.findAll(
                 Specifications.listBy(
                     employerView,
+                    officeService.getById(employerView.getOfficeId()),
                     citizenshipService.getByCode(employerView.getCitizenshipCode()),
-                    documentTypeService.getByCode(employerView.getDocCode())
+                    documentService.getByName(employerView.getDocName())
                 )
         );
         if (list.isEmpty()) {
@@ -83,7 +87,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
     /**
      * {@inheritDoc}
      */
-//    @Override
+    @Override
     @Transactional
     public void save(EmployerView emplView) {
         LOGGER.debug(String.format("Save employer \n %s", emplView.toString()));
@@ -103,7 +107,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
     /**
      * {@inheritDoc}
      */
-//    @Override
+    @Override
     @Transactional
     public void update(EmployerView emplView) {
         LOGGER.debug(String.format("Update user \n %s", emplView.toString()));
@@ -127,12 +131,12 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
         try {
             id = Integer.parseInt(sid);
         } catch (NumberFormatException ex) {
-            throw new CantFindByParam(String.format(" wrong employer convert id=%s", sid));
+            throw new CantFindByParam(String.format("wrong user convert id=%s", sid));
         }
         Optional<Employer> optional = employerRepository.findById(id);
-        LOGGER.debug(String.format("Find employer by id=%s \n result: %s", id, optional));
+        LOGGER.debug(String.format("Find user by id=%s \n result: %s", id, optional));
         if (!optional.isPresent()) {
-            throw new CantFindByParam(String.format(" no such employer id=%s", id));
+            throw new CantFindByParam(String.format("no such user id=%s", id));
         }
         return optional.get();
     }

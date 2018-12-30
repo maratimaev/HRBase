@@ -7,6 +7,7 @@ import ru.bellintegrator.hrbase.entity.Country;
 import ru.bellintegrator.hrbase.entity.Document;
 import ru.bellintegrator.hrbase.entity.DocumentType;
 import ru.bellintegrator.hrbase.entity.Employer;
+import ru.bellintegrator.hrbase.entity.Office;
 import ru.bellintegrator.hrbase.view.employer.EmployerView;
 
 import java.util.List;
@@ -74,10 +75,14 @@ public class MapperFacadeImpl implements MapperFacade {
                 .field("code", "citizenshipCode")
                 .field("name", "citizenshipName")
                 .register();
+        mapperFactory.classMap(Office.class, EmployerView.class)
+                .field("id", "officeId")
+                .register();
         mapperFactory.getMapperFacade(Employer.class, EmployerView.class).map(employer, employerView);
         mapperFactory.getMapperFacade(Document.class, EmployerView.class).map(employer.getDocument(), employerView);
         mapperFactory.getMapperFacade(DocumentType.class, EmployerView.class).map(employer.getDocument().getDocumentType(), employerView);
         mapperFactory.getMapperFacade(Country.class, EmployerView.class).map(employer.getCitizenship(), employerView);
+        mapperFactory.getMapperFacade(Office.class, EmployerView.class).map(employer.getOffice(), employerView);
         return employerView;
     }
 }

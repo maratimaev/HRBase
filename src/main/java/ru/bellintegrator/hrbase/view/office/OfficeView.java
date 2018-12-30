@@ -89,13 +89,13 @@ public class OfficeView {
 
     @Override
     public String toString() {
-        return "OfficeView{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                ", isActive='" + isActive + '\'' +
-                ", orgId='" + orgId + '\'' +
-                '}';
+        return "OfficeView{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", address='" + address + '\''
+                + ", phone='" + phone + '\''
+                + ", isActive='" + isActive + '\''
+                + ", orgId='" + orgId + '\''
+                + '}';
     }
 }

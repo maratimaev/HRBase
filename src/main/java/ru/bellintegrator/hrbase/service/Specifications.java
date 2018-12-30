@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import ru.bellintegrator.hrbase.entity.Country;
-import ru.bellintegrator.hrbase.entity.DocumentType;
+import ru.bellintegrator.hrbase.entity.Document;
 import ru.bellintegrator.hrbase.entity.Employer;
 import ru.bellintegrator.hrbase.entity.Office;
 import ru.bellintegrator.hrbase.entity.Organization;
@@ -65,20 +65,20 @@ public class Specifications {
     /** Поиск сотрудников по параметрам
      * @param employerView сотрудник
      * @param country гражданство
-     * @param documentType тип документа
+     * @param document документ
      * @return условие выборки
      */
-    public static Specification<Employer> listBy(EmployerView employerView, Country country, DocumentType documentType) {
+    public static Specification<Employer> listBy(EmployerView employerView, Office office, Country country, Document document) {
         return new Specification<Employer>() {
             @Override
             public Predicate toPredicate(Root<Employer> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
                 try {
-                    if (employerView.getOfficeId() != null) {
-                        predicates.add(cb.equal(root.get("office"), Integer.parseInt(employerView.getOfficeId())));
+                    if (office != null) {
+                        predicates.add(cb.equal(root.get("office"), office.getId()));
                     }
-                    if (documentType != null) {
-                        predicates.add(cb.equal(root.get("document"), documentType.getId()));
+                    if (document != null) {
+                        predicates.add(cb.equal(root.get("document"), document.getId()));
                     }
                     if (country != null) {
                         predicates.add(cb.equal(root.get("citizenship"), country.getId()));

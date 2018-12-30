@@ -124,14 +124,14 @@ public class EmployerViewList extends EmployerView {
 
     @Override
     public String toString() {
-        return "EmployerViewList{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", position='" + position + '\'' +
-                ", docCode='" + docCode + '\'' +
-                ", citizenshipCode='" + citizenshipCode + '\'' +
-                ", officeId='" + officeId + '\'' +
-                '}';
+        return "EmployerViewList{"
+                + "firstName='" + firstName + '\''
+                + ", lastName='" + lastName + '\''
+                + ", middleName='" + middleName + '\''
+                + ", position='" + position + '\''
+                + ", docCode='" + docCode + '\''
+                + ", citizenshipCode='" + citizenshipCode + '\''
+                + ", officeId='" + officeId + '\''
+                + '}';
     }
 }

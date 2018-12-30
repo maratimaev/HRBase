@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * DateToStringConverter provides custom conversion from String values to and
@@ -93,15 +94,25 @@ public class DateToStringConverter extends BidirectionalConverter<Date, String> 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         DateToStringConverter that = (DateToStringConverter) o;
 
-        if (pattern != null ? !pattern.equals(that.pattern) : that.pattern != null) return false;
+        if (pattern != null ? !pattern.equals(that.pattern) : that.pattern != null) {
+            return false;
+        }
         return locale != null ? locale.equals(that.locale) : that.locale == null;
-
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pattern, locale, dateFormats);
+    }
 }
