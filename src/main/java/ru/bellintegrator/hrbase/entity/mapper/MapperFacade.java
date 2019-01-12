@@ -2,7 +2,7 @@ package ru.bellintegrator.hrbase.entity.mapper;
 
 import ru.bellintegrator.hrbase.entity.Document;
 import ru.bellintegrator.hrbase.entity.Employer;
-import ru.bellintegrator.hrbase.view.employer.EmployerView;
+import ru.bellintegrator.hrbase.view.EmployerView;
 
 import java.util.List;
 

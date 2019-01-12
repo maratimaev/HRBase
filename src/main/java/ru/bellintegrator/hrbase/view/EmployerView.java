@@ -1,97 +1,120 @@
-package ru.bellintegrator.hrbase.view.employer;
+package ru.bellintegrator.hrbase.view;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.view.profile.Profile;
+import ru.bellintegrator.hrbase.view.profile.InputProfile;
+import ru.bellintegrator.hrbase.view.profile.OutputProfile;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
- * Out View для employer
+ * View для employer
  */
 public class EmployerView {
     /**
      * id сотрудника
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @NotEmpty(groups = {InputProfile.Update.class})
+    @Pattern(regexp = "\\b(?!(?:0)\\b)\\d{1,9}\\b", groups = {InputProfile.Update.class})
     private String id;
 
     /**
      * Id офиса сотрудника
      */
+    @NotEmpty(groups = {InputProfile.GetList.class})
+    @Pattern(regexp = "\\b(?!(?:0)\\b)\\d{1,9}\\b", groups = {InputProfile.GetList.class, InputProfile.Save.class})
     private String officeId;
 
     /**
      * Имя
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @NotEmpty(groups = {InputProfile.Save.class, InputProfile.Update.class})
+    @Size(max = 50, groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String firstName;
 
     /**
      * Фамилия
      */
+    @Size(max = 50, groups = {InputProfile.GetList.class, InputProfile.Save.class})
     private String lastName;
 
     /**
      * Отчество
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @Size(max = 50, groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String middleName;
 
     /**
      * Второе имя
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @Size(max = 50, groups = {InputProfile.Update.class})
     private String secondName;
 
     /**
      * Должность
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @NotEmpty(groups = {InputProfile.Save.class, InputProfile.Update.class})
+    @Size(max = 50, groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String position;
 
     /**
      * Телефон
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Size(max = 50, groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String phone;
 
     /**
      * Код типа документа
      */
+    @Pattern(regexp = "\\d{0,2}", groups = {InputProfile.GetList.class, InputProfile.Save.class})
     private String docCode;
 
     /**
      * Название документа
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Size(max = 100, groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String docName;
 
     /**
      * Номер документа
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Pattern(regexp = "\\d{0,20}", groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String docNumber;
 
     /**
      * Дата документа
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Pattern(regexp = "[0-9]{4}-(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])", groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String docDate;
 
     /**
      * Гржаданство
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
     private String citizenshipName;
 
     /**
      * Код страны
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Pattern(regexp = "\\d{0,3}", groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String citizenshipCode;
 
     /**
      * Признак идентификации
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Pattern(regexp = "false|true+$|^$", groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String isIdentified;
 
     public String getId() {

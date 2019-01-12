@@ -1,38 +1,27 @@
 package ru.bellintegrator.hrbase.view.result;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.view.profile.WrapperProfile;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.bellintegrator.hrbase.view.profile.OutputProfile;
 
 /** Класс - обертка для выводимых данных
  * @param <T>
  */
-public class Wrapper<T> implements Result {
-    @JsonView(WrapperProfile.Data.class)
-    private List<T> data;
+public class Wrapper<T> {
+    @JsonView(OutputProfile.Data.class)
+    private T data;
 
     public Wrapper() {
     }
 
-    public Wrapper(List<T> data) {
+    public Wrapper(T data) {
         this.data = data;
     }
 
-    /** Конструктор с доавлением элемента в список
-     * @param t
-     */
-    public Wrapper(T t) {
-        data = new ArrayList<>();
-        data.add(t);
-    }
-
-    public List<T> getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(List<T> data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

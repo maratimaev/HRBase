@@ -1,42 +1,57 @@
-package ru.bellintegrator.hrbase.view.office;
+package ru.bellintegrator.hrbase.view;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.view.profile.Profile;
+import ru.bellintegrator.hrbase.view.profile.InputProfile;
+import ru.bellintegrator.hrbase.view.profile.OutputProfile;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
- * Сущность, связанная с таблицей Office
+ * View для office
  */
 public class OfficeView {
     /**
      * id офиса
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @NotEmpty(groups = {InputProfile.Update.class})
+    @Pattern(regexp = "\\b(?!(?:0)\\b)\\d{1,9}\\b", groups = {InputProfile.Update.class})
     private String id;
 
     /**
      * Имя офиса
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @NotEmpty(groups = {InputProfile.Update.class})
+    @Size(max = 50, groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String name;
 
     /**
      * Адрес
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @NotEmpty(groups = {InputProfile.Update.class})
+    @Size(max = 200, groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String address;
 
     /**
      * Телефон
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Size(max = 20, groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String phone;
 
     /**
      * Признак активности
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @Pattern(regexp = "false|true+$|^$", groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String isActive;
 
+    @NotEmpty(groups = {InputProfile.GetList.class, InputProfile.Save.class})
+    @Pattern(regexp = "\\b(?!(?:0)\\b)\\d{1,9}\\b", groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String orgId;
 
     public String getId() {

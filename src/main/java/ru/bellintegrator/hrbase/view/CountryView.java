@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.view.country;
+package ru.bellintegrator.hrbase.view;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 /**
  * Отображение данных страны
  */
-public class CountryViewSave {
+public class CountryView {
     /**
      * id страны
      */
@@ -55,7 +55,7 @@ public class CountryViewSave {
 
     @Override
     public String toString() {
-        return "CountryViewSave{"
+        return "CountryView{"
                 + "id='" + id + '\''
                 + ", name='" + name + '\''
                 + ", code='" + code + '\''

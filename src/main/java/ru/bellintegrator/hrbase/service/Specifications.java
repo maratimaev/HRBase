@@ -9,7 +9,7 @@ import ru.bellintegrator.hrbase.entity.Employer;
 import ru.bellintegrator.hrbase.entity.Office;
 import ru.bellintegrator.hrbase.entity.Organization;
 import ru.bellintegrator.hrbase.exception.CantFindByParam;
-import ru.bellintegrator.hrbase.view.employer.EmployerView;
+import ru.bellintegrator.hrbase.view.EmployerView;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;

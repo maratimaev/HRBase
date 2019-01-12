@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.bellintegrator.hrbase.service.OrganizationServiceImpl;
-import ru.bellintegrator.hrbase.view.organization.OrganizationView;
+import ru.bellintegrator.hrbase.view.OrganizationView;
 import ru.bellintegrator.hrbase.view.result.Error;
 import ru.bellintegrator.hrbase.view.result.Success;
 import ru.bellintegrator.hrbase.view.result.Wrapper;
@@ -68,7 +68,7 @@ public class OrganizationTest {
                 });
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), is(notNullValue()));
-        OrganizationView result = response.getBody().getData().get(0);
+        OrganizationView result = response.getBody().getData();
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is(sampleOrganization.getName()));
@@ -111,8 +111,8 @@ public class OrganizationTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(sampleOrganization);
 
-        ResponseEntity<Wrapper<OrganizationView>> response = restTemplate.exchange(
-                request, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {
+        ResponseEntity<Wrapper<List<OrganizationView>>> response = restTemplate.exchange(
+                request, new ParameterizedTypeReference<Wrapper<List<OrganizationView>>>() {
         });
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -168,7 +168,7 @@ public class OrganizationTest {
                 });
         assertThat(getResponse.getStatusCode(), is(HttpStatus.OK));
         assertThat(getResponse.getBody(), is(notNullValue()));
-        OrganizationView result = getResponse.getBody().getData().get(0);
+        OrganizationView result = getResponse.getBody().getData();
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is(sampleOrg.getName()));
     }
@@ -186,7 +186,7 @@ public class OrganizationTest {
         ResponseEntity<Error> saveResponse = restTemplate.postForEntity(url, sampleOrg, Error.class);
         assertThat(saveResponse.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(saveResponse.getBody(), is(notNullValue()));
-        assertThat(saveResponse.getBody().getError(), is("Field (name) can't be: null"));
+        assertThat(saveResponse.getBody().getError().contains("Field (name) can't be: null"), is(true));
     }
 
     /**
@@ -223,7 +223,7 @@ public class OrganizationTest {
                 });
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), is(notNullValue()));
-        OrganizationView result = responseEntity.getBody().getData().get(0);
+        OrganizationView result = responseEntity.getBody().getData();
         assertThat(result, is(notNullValue()));
         assertThat(result.getInn(), is(sampleOrg.getInn()));
     }
@@ -240,7 +240,7 @@ public class OrganizationTest {
         ResponseEntity<Error> response = restTemplate.postForEntity(url, sampleOrg, Error.class);
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody().getError(), is("Field (inn) can't be: null"));
+        assertThat(response.getBody().getError(), is("Field (inn) can't be: null (не может быть пусто)"));
     }
 
     /**

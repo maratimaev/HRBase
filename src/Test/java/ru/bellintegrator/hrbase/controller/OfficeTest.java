@@ -17,8 +17,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.bellintegrator.hrbase.service.OfficeServiceImpl;
 import ru.bellintegrator.hrbase.service.OrganizationServiceImpl;
-import ru.bellintegrator.hrbase.view.office.OfficeView;
-import ru.bellintegrator.hrbase.view.organization.OrganizationView;
+import ru.bellintegrator.hrbase.view.OfficeView;
+import ru.bellintegrator.hrbase.view.OrganizationView;
 import ru.bellintegrator.hrbase.view.result.Error;
 import ru.bellintegrator.hrbase.view.result.Success;
 import ru.bellintegrator.hrbase.view.result.Wrapper;
@@ -77,7 +77,7 @@ public class OfficeTest {
                 });
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), is(notNullValue()));
-        OfficeView officeView = response.getBody().getData().get(0);
+        OfficeView officeView = response.getBody().getData();
 
         assertThat(officeView, is(notNullValue()));
         assertThat(officeView.getName(), is(sampleOffice.getName()));
@@ -116,8 +116,8 @@ public class OfficeTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(sampleOffice);
 
-        ResponseEntity<Wrapper<OfficeView>> response = restTemplate.exchange(
-                request, new ParameterizedTypeReference<Wrapper<OfficeView>>() {
+        ResponseEntity<Wrapper<List<OfficeView>>> response = restTemplate.exchange(
+                request, new ParameterizedTypeReference<Wrapper<List<OfficeView>>>() {
                 });
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -173,7 +173,7 @@ public class OfficeTest {
                 });
         assertThat(getResponse.getStatusCode(), is(HttpStatus.OK));
         assertThat(getResponse.getBody(), is(notNullValue()));
-        OfficeView result = getResponse.getBody().getData().get(0);
+        OfficeView result = getResponse.getBody().getData();
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is(sampleOffice.getName()));
     }
@@ -206,7 +206,7 @@ public class OfficeTest {
         ResponseEntity<Error> saveResponse = restTemplate.postForEntity(url, officeView, Error.class);
         assertThat(saveResponse.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(saveResponse.getBody(), is(notNullValue()));
-        assertThat(saveResponse.getBody().getError(), is("Field (isActive) can't be: wrongBoolean"));
+        assertThat(saveResponse.getBody().getError().contains("Field (isActive) can't be: wrongBoolean"), is(true));
     }
 
     /**
@@ -229,7 +229,7 @@ public class OfficeTest {
                 });
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), is(notNullValue()));
-        OfficeView result = responseEntity.getBody().getData().get(0);
+        OfficeView result = responseEntity.getBody().getData();
         assertThat(result, is(notNullValue()));
         assertThat(result.getPhone(), is(sampleOffice.getPhone()));
     }
@@ -246,7 +246,7 @@ public class OfficeTest {
         ResponseEntity<Error> response = restTemplate.postForEntity(url, sampleOffice, Error.class);
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody().getError(), is("Field (name) can't be: null"));
+        assertThat(response.getBody().getError().contains("Field (name) can't be: null"), is(true));
     }
 
     /**
@@ -261,7 +261,7 @@ public class OfficeTest {
         ResponseEntity<Error> response = restTemplate.postForEntity(url, sampleOffice, Error.class);
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody().getError(), is("Field (id) can't be: 0"));
+        assertThat(response.getBody().getError().contains("Field (id) can't be: 0"), is(true));
     }
 
     /**

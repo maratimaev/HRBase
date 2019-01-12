@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.bellintegrator.hrbase.entity.Country;
 import ru.bellintegrator.hrbase.entity.Document;
 import ru.bellintegrator.hrbase.entity.DocumentType;
@@ -15,10 +16,9 @@ import ru.bellintegrator.hrbase.exception.CantSaveNewObject;
 import ru.bellintegrator.hrbase.exception.CantUpdateObject;
 import ru.bellintegrator.hrbase.repository.DocumentRepository;
 import ru.bellintegrator.hrbase.repository.EmployerRepository;
-import ru.bellintegrator.hrbase.view.employer.EmployerView;
-import ru.bellintegrator.hrbase.view.office.OfficeView;
+import ru.bellintegrator.hrbase.view.EmployerView;
+import ru.bellintegrator.hrbase.view.OfficeView;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,30 +31,36 @@ import java.util.Optional;
 public class EmployerServiceImpl implements GenericService<EmployerView, Employer> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployerServiceImpl.class.getName());
 
-    @Autowired
-    private EmployerRepository employerRepository;
+    private final EmployerRepository employerRepository;
+
+    private final DocumentRepository documentRepository;
+
+    private final GenericService<OfficeView, Office> officeService;
+
+    private final GenericGetByParamService<Country> citizenshipService;
+
+    private final GenericGetByNameService<Document> documentService;
+
+    private final GenericGetByNameService<DocumentType> documentTypeService;
+
+    private final MapperFacade mapperFacade;
 
     @Autowired
-    private DocumentRepository documentRepository;
-
-    @Autowired
-    private GenericService<OfficeView, Office> officeService;
-
-    @Autowired
-    private GenericGetByParamService<Country> citizenshipService;
-
-    @Autowired
-    private GenericGetByNameService<Document> documentService;
-
-    @Autowired
-    private GenericGetByNameService<DocumentType> documentTypeService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    public EmployerServiceImpl(EmployerRepository employerRepository, DocumentRepository documentRepository, GenericService<OfficeView, Office> officeService, GenericGetByParamService<Country> citizenshipService, GenericGetByNameService<Document> documentService, GenericGetByNameService<DocumentType> documentTypeService, MapperFacade mapperFacade) {
+        this.employerRepository = employerRepository;
+        this.documentRepository = documentRepository;
+        this.officeService = officeService;
+        this.citizenshipService = citizenshipService;
+        this.documentService = documentService;
+        this.documentTypeService = documentTypeService;
+        this.mapperFacade = mapperFacade;
+    }
 
     /**
      * {@inheritDoc}
      */
+    @Override
+    @Transactional(readOnly = true)
     public EmployerView find(String id) {
         return mapperFacade.mapToEmployer(getById(id), new EmployerView());
     }
@@ -63,6 +69,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public List<EmployerView> list(EmployerView employerView) {
         List<Employer> list = employerRepository.findAll(
                 Specifications.listBy(
@@ -126,6 +133,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
     /**
      * {@inheritDoc}
      */
+    @Transactional(readOnly = true)
     public Employer getById(String sid) {
         int id;
         try {
@@ -145,7 +153,8 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
      * @param emplView данные сотрудника
      * @return документ
      */
-    private Document saveDocument(EmployerView emplView) {
+    @Transactional
+    public Document saveDocument(EmployerView emplView) {
         LOGGER.debug(String.format("Save document \n %s", emplView.toString()));
         Document documentEntity = null;
         DocumentType docType = documentTypeService.getByName(emplView.getDocName());

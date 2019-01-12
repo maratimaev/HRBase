@@ -1,7 +1,7 @@
 package ru.bellintegrator.hrbase.service;
 
 /**
- * Сервис для работы с типом документа
+ * Сервис для работы с типом документа, документом и гражданством
  */
 public interface GenericGetByNameService<T> extends GenericGetByParamService<T> {
 

@@ -5,12 +5,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import ru.bellintegrator.hrbase.controller.EmployerController;
+import ru.bellintegrator.hrbase.controller.OfficeController;
+import ru.bellintegrator.hrbase.controller.OrganizationController;
 
-import java.util.List;
-
-@ControllerAdvice
+@RestControllerAdvice(assignableTypes = {OrganizationController.class, OfficeController.class, EmployerController.class})
 public class ResponseAdviser implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
@@ -28,15 +29,6 @@ public class ResponseAdviser implements ResponseBodyAdvice<Object> {
         if (object instanceof Success) {
             return object;
         }
-        if (object instanceof Error) {
-            if (((Error) object).getHttpStatus() != null) {
-                serverHttpResponse.setStatusCode(((Error) object).getHttpStatus());
-            }
-            return object;
-        }
-        if (object instanceof List) {
-            return new Wrapper<>((List<Object>) object);
-        }
-        return new Wrapper<>(object);
+        return new Wrapper(object);
     }
 }

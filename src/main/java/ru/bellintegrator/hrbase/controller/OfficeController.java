@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.hrbase.entity.Office;
 import ru.bellintegrator.hrbase.exception.OrganizationsIdMustBeEquals;
 import ru.bellintegrator.hrbase.service.GenericService;
-import ru.bellintegrator.hrbase.view.office.OfficeView;
-import ru.bellintegrator.hrbase.view.office.OfficeViewList;
-import ru.bellintegrator.hrbase.view.office.OfficeViewSave;
-import ru.bellintegrator.hrbase.view.office.OfficeViewUpdate;
-import ru.bellintegrator.hrbase.view.profile.WrapperProfile;
-import ru.bellintegrator.hrbase.view.result.Error;
-import ru.bellintegrator.hrbase.view.result.Result;
+import ru.bellintegrator.hrbase.view.OfficeView;
+import ru.bellintegrator.hrbase.view.profile.InputProfile;
+import ru.bellintegrator.hrbase.view.profile.OutputProfile;
 import ru.bellintegrator.hrbase.view.result.Success;
 
-import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Контроллеры для работы с офисами
@@ -36,14 +30,18 @@ import javax.validation.Valid;
 public class OfficeController {
     private static final Logger LOGGER = LoggerFactory.getLogger(OfficeController.class.getName());
 
+    private final GenericService<OfficeView, Office> officeService;
+
     @Autowired
-    private GenericService<OfficeView, Office> officeService;
+    public OfficeController(GenericService<OfficeView, Office> officeService) {
+        this.officeService = officeService;
+    }
 
     /** Поиск офиса по id
      * @param id офиса
      * @return View офиса
      */
-    @JsonView(WrapperProfile.Full.class)
+    @JsonView(OutputProfile.Full.class)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public OfficeView officeById(@PathVariable String id) {
         LOGGER.debug(String.format("Find office by id=%s", id));
@@ -51,65 +49,39 @@ public class OfficeController {
     }
 
     /** Поиск офиса по параметрам
-     * @param officeViewList объект json с constraints по полям
-     * @return список офисов внутри List<OfficeView> или Error
+     * @param officeView объект json с constraints по полям
+     * @return список офисов внутри List<OfficeView>
      */
-    @JsonView(WrapperProfile.Short.class)
+    @JsonView(OutputProfile.Short.class)
     @PostMapping(value = "/list/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Object getOrganizations(@RequestBody @Valid OfficeViewList officeViewList,
-                                             @PathVariable String id, BindingResult bindingResult) {
-        Object result;
-        if (!id.equals(officeViewList.getOrgId())) {
-            throw new OrganizationsIdMustBeEquals(id, officeViewList.getOrgId());
+    public List<OfficeView> getOrganizations(@RequestBody @Validated({InputProfile.GetList.class}) OfficeView officeView, @PathVariable String id) {
+        if (!id.equals(officeView.getOrgId())) {
+            throw new OrganizationsIdMustBeEquals(id, officeView.getOrgId());
         }
-        if (bindingResult.hasErrors()) {
-            LOGGER.error(String.format("Can't find offices : \n %s", bindingResult.toString()));
-            FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
-        } else {
-            LOGGER.debug(String.format("Get offices by organization id=%s, offices name=%s, phone=%s, isActive=%s",
-                    id, officeViewList.getName(), officeViewList.getPhone(), officeViewList.getIsActive()));
-            result = officeService.list(officeViewList);
-        }
-        return result;
+        LOGGER.debug(String.format("Get offices by organization id=%s, offices name=%s, phone=%s, isActive=%s",
+                    id, officeView.getName(), officeView.getPhone(), officeView.getIsActive()));
+        return officeService.list(officeView);
     }
 
     /** Сохранение нового офиса в БД
-     * @param officeViewSave объект json c constraints
-     * @return результат success/error
+     * @param officeView объект json с constraints по полям
+     * @return результат success
      */
-    @JsonView(WrapperProfile.Data.class)
     @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Result saveOrganization(@RequestBody @Valid OfficeViewSave officeViewSave, BindingResult bindingResult) {
-        Result result = new Success();
-        if (bindingResult.hasErrors()) {
-            LOGGER.error(String.format("Can't save office : \n %s", bindingResult.toString()));
-            FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
-        } else {
-            LOGGER.debug(String.format("Save office with fields \n %s", officeViewSave.toString()));
-            officeService.save(officeViewSave);
-        }
-        return result;
+    public Success saveOrganization(@RequestBody @Validated({InputProfile.Save.class}) OfficeView officeView) {
+        LOGGER.debug(String.format("Save office with fields \n %s", officeView.toString()));
+        officeService.save(officeView);
+        return new Success();
     }
 
     /** Изменение параметров офиса
-     * @param officeViewUpdate объект json
-     * @param bindingResult результат валидации
-     * @return результат uccess/error
+     * @param officeView объект json с constraints по полям
+     * @return результат success
      */
-    @JsonView(WrapperProfile.Data.class)
     @PostMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Result updateOffice(@RequestBody @Valid OfficeViewUpdate officeViewUpdate, BindingResult bindingResult) {
-        Result result = new Success();
-        if (bindingResult.hasErrors()) {
-            LOGGER.error(String.format("Can't update office : \n %s", bindingResult.toString()));
-            FieldError error = bindingResult.getFieldErrors().get(0);
-            result = new Error(String.format("Field (%s) can't be: %s", error.getField(), error.getRejectedValue()), HttpStatus.NOT_ACCEPTABLE);
-        } else {
-            LOGGER.debug(String.format("Update office with fields \n %s", officeViewUpdate.toString()));
-            officeService.update(officeViewUpdate);
-        }
-        return  result;
+    public Success updateOffice(@RequestBody @Validated({InputProfile.Update.class}) OfficeView officeView) {
+        LOGGER.debug(String.format("Update office with fields \n %s", officeView.toString()));
+        officeService.update(officeView);
+        return new Success();
     }
 }

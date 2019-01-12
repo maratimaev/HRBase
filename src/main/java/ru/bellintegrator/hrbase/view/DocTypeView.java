@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.view.doctype;
+package ru.bellintegrator.hrbase.view;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 /**
  * Отображение данных типа документа
  */
-public class DocTypeViewSave {
+public class DocTypeView {
     /**
      * id типа документа
      */
@@ -55,7 +55,7 @@ public class DocTypeViewSave {
 
     @Override
     public String toString() {
-        return "DocTypeViewSave{"
+        return "DocTypeView{"
                 + "id='" + id + '\''
                 + ", name='" + name + '\''
                 + ", code='" + code + '\''

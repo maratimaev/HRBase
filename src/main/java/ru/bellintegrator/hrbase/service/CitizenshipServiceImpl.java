@@ -4,12 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.bellintegrator.hrbase.entity.Country;
 import ru.bellintegrator.hrbase.entity.mapper.MapperFacade;
 import ru.bellintegrator.hrbase.exception.CantFindByParam;
 import ru.bellintegrator.hrbase.exception.CantSaveNewObject;
 import ru.bellintegrator.hrbase.repository.CitizenshipRepository;
-import ru.bellintegrator.hrbase.view.country.CountryViewSave;
+import ru.bellintegrator.hrbase.view.CountryView;
 
 /**
  * {@inheritDoc}
@@ -18,15 +19,20 @@ import ru.bellintegrator.hrbase.view.country.CountryViewSave;
 public class CitizenshipServiceImpl implements GenericGetByParamService<Country> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CitizenshipServiceImpl.class.getName());
 
-    @Autowired
-    private CitizenshipRepository citizenshipRepository;
+    private final CitizenshipRepository citizenshipRepository;
+
+    private final MapperFacade mapperFacade;
 
     @Autowired
-    private MapperFacade mapperFacade;
+    public CitizenshipServiceImpl(CitizenshipRepository citizenshipRepository, MapperFacade mapperFacade) {
+        this.citizenshipRepository = citizenshipRepository;
+        this.mapperFacade = mapperFacade;
+    }
 
     /**
      * {@inheritDoc}
      */
+    @Transactional(readOnly = true)
     public Country getByCode(String code) {
         Country country = citizenshipRepository.findByCode(code);
         if (code != null && !code.isEmpty() && country == null) {
@@ -37,12 +43,13 @@ public class CitizenshipServiceImpl implements GenericGetByParamService<Country>
     }
 
     /** Сохранение страны в БД
-     * @param countryViewSave страны
+     * @param countryView страны
      */
-    public void save(CountryViewSave countryViewSave) {
-        LOGGER.debug(String.format("Save country \n %s", countryViewSave.toString()));
+    @Transactional
+    public void save(CountryView countryView) {
+        LOGGER.debug(String.format("Save country \n %s", countryView.toString()));
         try {
-            citizenshipRepository.saveAndFlush(mapperFacade.map(countryViewSave, Country.class));
+            citizenshipRepository.saveAndFlush(mapperFacade.map(countryView, Country.class));
         } catch (Exception ex) {
             throw new CantSaveNewObject("country");
         }

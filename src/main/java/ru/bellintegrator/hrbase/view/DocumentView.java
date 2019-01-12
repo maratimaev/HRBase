@@ -1,4 +1,4 @@
-package ru.bellintegrator.hrbase.view.document;
+package ru.bellintegrator.hrbase.view;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 /**
  * Отображение данных документа
  */
-public class DocumentViewSave {
+public class DocumentView {
     /**
      * id документа
      */
@@ -70,7 +70,7 @@ public class DocumentViewSave {
 
     @Override
     public String toString() {
-        return "DocumentViewSave{"
+        return "DocumentView{"
                 + "id='" + id + '\''
                 + ", number='" + number + '\''
                 + ", typeId='" + typeId + '\''

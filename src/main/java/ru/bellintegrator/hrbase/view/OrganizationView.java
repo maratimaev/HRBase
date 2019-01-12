@@ -1,58 +1,77 @@
-package ru.bellintegrator.hrbase.view.organization;
+package ru.bellintegrator.hrbase.view;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import ru.bellintegrator.hrbase.view.profile.Profile;
+import ru.bellintegrator.hrbase.view.profile.InputProfile;
+import ru.bellintegrator.hrbase.view.profile.OutputProfile;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
- * Отображение даанных организации
+ * View для organization
  */
 public class OrganizationView {
     /**
      * id организации
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @NotEmpty(groups = {InputProfile.Update.class})
+    @Pattern(regexp = "\\b(?!(?:0)\\b)\\d{1,9}\\b", groups = {InputProfile.Update.class})
     private String id;
-
+    
     /**
      * Имя организации
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @NotEmpty(groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
+    @Size(max = 50, groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String name;
 
     /**
      * Полное имя организации
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @NotEmpty(groups = {InputProfile.Save.class, InputProfile.Update.class})
+    @Size(max = 100, groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String fullName;
 
     /**
      * Инн организации
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @NotEmpty(groups = {InputProfile.Save.class, InputProfile.Update.class})
+    @Pattern(regexp = "\\d{0,12}", groups = {InputProfile.GetList.class, InputProfile.Save.class, InputProfile.Update.class})
     private String inn;
 
     /**
      * КПП организации
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @NotEmpty(groups = {InputProfile.Save.class, InputProfile.Update.class})
+    @Pattern(regexp = "\\d{0,9}", groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String kpp;
 
     /**
      * Адрес
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @NotEmpty(groups = {InputProfile.Save.class, InputProfile.Update.class})
+    @Size(max = 200, groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String address;
 
     /**
      * Телефон
      */
-    @JsonView(Profile.Full.class)
+    @JsonView(OutputProfile.Full.class)
+    @Size(max = 20, groups = {InputProfile.Save.class, InputProfile.Update.class})
     private String phone;
 
     /**
      * Признак активности
      */
-    @JsonView(Profile.Short.class)
+    @JsonView(OutputProfile.Short.class)
+    @Pattern(regexp = "false|true+$|^$", groups = {InputProfile.Save.class, InputProfile.GetList.class, InputProfile.Update.class})
     private String isActive;
 
     public String getId() {

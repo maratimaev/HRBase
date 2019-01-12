@@ -20,11 +20,11 @@ import ru.bellintegrator.hrbase.service.DocumentTypeServiceImpl;
 import ru.bellintegrator.hrbase.service.EmployerServiceImpl;
 import ru.bellintegrator.hrbase.service.OfficeServiceImpl;
 import ru.bellintegrator.hrbase.service.OrganizationServiceImpl;
-import ru.bellintegrator.hrbase.view.country.CountryViewSave;
-import ru.bellintegrator.hrbase.view.doctype.DocTypeViewSave;
-import ru.bellintegrator.hrbase.view.employer.EmployerView;
-import ru.bellintegrator.hrbase.view.office.OfficeView;
-import ru.bellintegrator.hrbase.view.organization.OrganizationView;
+import ru.bellintegrator.hrbase.view.CountryView;
+import ru.bellintegrator.hrbase.view.DocTypeView;
+import ru.bellintegrator.hrbase.view.EmployerView;
+import ru.bellintegrator.hrbase.view.OfficeView;
+import ru.bellintegrator.hrbase.view.OrganizationView;
 import ru.bellintegrator.hrbase.view.result.Error;
 import ru.bellintegrator.hrbase.view.result.Success;
 import ru.bellintegrator.hrbase.view.result.Wrapper;
@@ -95,7 +95,7 @@ public class EmployerTest {
                 });
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), is(notNullValue()));
-        EmployerView result = response.getBody().getData().get(0);
+        EmployerView result = response.getBody().getData();
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getFirstName(), is(sampleEmployer.getFirstName()));
@@ -144,8 +144,8 @@ public class EmployerTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(sampleEmployer);
 
-        ResponseEntity<Wrapper<EmployerView>> response = restTemplate.exchange(
-                request, new ParameterizedTypeReference<Wrapper<EmployerView>>() {
+        ResponseEntity<Wrapper<List<EmployerView>>> response = restTemplate.exchange(
+                request, new ParameterizedTypeReference<Wrapper<List<EmployerView>>>() {
                 });
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -177,7 +177,7 @@ public class EmployerTest {
         ResponseEntity<Error> response = restTemplate.exchange(request, Error.class);
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody().getError(), is("Field (officeId) can't be: null"));
+        assertThat(response.getBody().getError().contains("Field (officeId) can't be: null"), is(true));
     }
 
     /**
@@ -200,7 +200,7 @@ public class EmployerTest {
                 });
         assertThat(getResponse.getStatusCode(), is(HttpStatus.OK));
         assertThat(getResponse.getBody(), is(notNullValue()));
-        EmployerView result = getResponse.getBody().getData().get(0);
+        EmployerView result = getResponse.getBody().getData();
         assertThat(result, is(notNullValue()));
         assertThat(result.getFirstName(), is(sampleEmployer.getFirstName()));
     }
@@ -217,7 +217,7 @@ public class EmployerTest {
         ResponseEntity<Error> saveResponse = restTemplate.postForEntity(url, sampleEmployer, Error.class);
         assertThat(saveResponse.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(saveResponse.getBody(), is(notNullValue()));
-        assertThat(saveResponse.getBody().getError(), is("Field (firstName) can't be: null"));
+        assertThat(saveResponse.getBody().getError().contains("Field (firstName) can't be: null"), is(true));
     }
 
     /**
@@ -232,7 +232,7 @@ public class EmployerTest {
         ResponseEntity<Error> saveResponse = restTemplate.postForEntity(url, sampleEmployer, Error.class);
         assertThat(saveResponse.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(saveResponse.getBody(), is(notNullValue()));
-        assertThat(saveResponse.getBody().getError(), is("Field (isIdentified) can't be: wrongBoolean"));
+        assertThat(saveResponse.getBody().getError().contains("Field (isIdentified) can't be: wrongBoolean"), is(true));
     }
 
     /**
@@ -255,7 +255,7 @@ public class EmployerTest {
                 });
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), is(notNullValue()));
-        EmployerView result = responseEntity.getBody().getData().get(0);
+        EmployerView result = responseEntity.getBody().getData();
         assertThat(result, is(notNullValue()));
         assertThat(result.getPhone(), is(sampleEmployer.getPhone()));
     }
@@ -272,7 +272,7 @@ public class EmployerTest {
         ResponseEntity<Error> response = restTemplate.postForEntity(url, sampleEmployer, Error.class);
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody().getError(), is("Field (position) can't be: null"));
+        assertThat(response.getBody().getError().contains("Field (position) can't be: null"), is(true));
     }
 
     /**
@@ -287,7 +287,7 @@ public class EmployerTest {
         ResponseEntity<Error> response = restTemplate.postForEntity(url, sampleEmployer, Error.class);
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_ACCEPTABLE));
         assertThat(response.getBody(), is(notNullValue()));
-        assertThat(response.getBody().getError(), is("Field (id) can't be: 0"));
+        assertThat(response.getBody().getError().contains("Field (id) can't be: 0"), is(true));
     }
 
     /**
@@ -388,43 +388,43 @@ public class EmployerTest {
     }
 
     /**
-     * Создание тестового объекта DocTypeViewSave
+     * Создание тестового объекта DocTypeView
      * @return созданный объект
      */
-    private DocTypeViewSave getSampleDocType() {
-        DocTypeViewSave docTypeViewSave = new DocTypeViewSave();
-        docTypeViewSave.setCode(generateDigits(2));
-        docTypeViewSave.setName(generateAlphabet(100));
-        return docTypeViewSave;
+    private DocTypeView getSampleDocType() {
+        DocTypeView docTypeView = new DocTypeView();
+        docTypeView.setCode(generateDigits(2));
+        docTypeView.setName(generateAlphabet(100));
+        return docTypeView;
     }
 
     /**
      * Сохранение тестового объекта тип документа в базе данных
      */
     private String saveSampleDocType() {
-        DocTypeViewSave docTypeViewSave = getSampleDocType();
-        this.documentTypeService.save(docTypeViewSave);
-        return docTypeViewSave.getName();
+        DocTypeView docTypeView = getSampleDocType();
+        this.documentTypeService.save(docTypeView);
+        return docTypeView.getName();
     }
 
     /**
-     * Создание тестового объекта CountryViewSave
+     * Создание тестового объекта CountryView
      * @return созданный объект
      */
-    private CountryViewSave getSampleCountry() {
-        CountryViewSave countryViewSave = new CountryViewSave();
-        countryViewSave.setCode(generateDigits(3));
-        countryViewSave.setName(generateAlphabet(100));
-        return countryViewSave;
+    private CountryView getSampleCountry() {
+        CountryView countryView = new CountryView();
+        countryView.setCode(generateDigits(3));
+        countryView.setName(generateAlphabet(100));
+        return countryView;
     }
 
     /**
      * Сохранение тестового объекта страна в базе данных
      */
     private String saveSampleCountry() {
-        CountryViewSave countryViewSave = getSampleCountry();
-        this.citizenshipService.save(countryViewSave);
-        return countryViewSave.getCode();
+        CountryView countryView = getSampleCountry();
+        this.citizenshipService.save(countryView);
+        return countryView.getCode();
     }
 
     /** Генерация строки из случайных символов алфавита

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.bellintegrator.hrbase.entity.Document;
 import ru.bellintegrator.hrbase.entity.DocumentType;
 import ru.bellintegrator.hrbase.exception.CantFindByParam;
@@ -17,15 +18,20 @@ import ru.bellintegrator.hrbase.repository.DocumentTypeRepository;
 public class DocumentServiceImpl implements GenericGetByNameService<Document> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocumentServiceImpl.class.getName());
 
-    @Autowired
-    private DocumentRepository documentRepository;
+    private final DocumentRepository documentRepository;
+
+    private final DocumentTypeRepository documentTypeRepository;
 
     @Autowired
-    private DocumentTypeRepository documentTypeRepository;
+    public DocumentServiceImpl(DocumentRepository documentRepository, DocumentTypeRepository documentTypeRepository) {
+        this.documentRepository = documentRepository;
+        this.documentTypeRepository = documentTypeRepository;
+    }
 
     /**
      * {@inheritDoc}
      */
+    @Transactional(readOnly = true)
     public Document getByCode(String number) {
         Document document = documentRepository.findByNumber(number);
         if (number != null && !number.isEmpty() && document == null) {
@@ -38,6 +44,7 @@ public class DocumentServiceImpl implements GenericGetByNameService<Document> {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public Document getByName(String name) {
         DocumentType documentType = documentTypeRepository.findByName(name);
         if (name != null && !name.isEmpty() && documentType == null) {

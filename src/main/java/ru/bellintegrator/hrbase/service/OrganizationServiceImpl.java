@@ -11,7 +11,7 @@ import ru.bellintegrator.hrbase.exception.CantFindByParam;
 import ru.bellintegrator.hrbase.exception.CantSaveNewObject;
 import ru.bellintegrator.hrbase.exception.CantUpdateObject;
 import ru.bellintegrator.hrbase.repository.OrganizationRepository;
-import ru.bellintegrator.hrbase.view.organization.OrganizationView;
+import ru.bellintegrator.hrbase.view.OrganizationView;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,16 +24,21 @@ import java.util.Optional;
 public class OrganizationServiceImpl implements GenericService<OrganizationView, Organization> {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationServiceImpl.class.getName());
 
-    @Autowired
-    private OrganizationRepository organizationRepository;
+    private final OrganizationRepository organizationRepository;
+
+    private final MapperFacade mapperFacade;
 
     @Autowired
-    private MapperFacade mapperFacade;
+    public OrganizationServiceImpl(OrganizationRepository organizationRepository, MapperFacade mapperFacade) {
+        this.organizationRepository = organizationRepository;
+        this.mapperFacade = mapperFacade;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public OrganizationView find(String id) {
         return mapperFacade.map(getById(id), OrganizationView.class);
     }
@@ -42,6 +47,7 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public List<OrganizationView> list(OrganizationView orgView) {
         List<Organization> list = organizationRepository.findAll(
                 Specifications.listBy(orgView.getName(), orgView.getInn(), orgView.getIsActive()));
@@ -57,6 +63,7 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void save(OrganizationView orgView) {
         LOGGER.debug(String.format("Save organizations \n %s", orgView.toString()));
         try {
@@ -85,6 +92,7 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
     /**
      * {@inheritDoc}
      */
+    @Transactional(readOnly = true)
     public Organization getById(String sid) {
         int id;
         try {
