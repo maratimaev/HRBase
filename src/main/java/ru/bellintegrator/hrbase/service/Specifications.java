@@ -44,7 +44,7 @@ public class Specifications {
                 try {
                     orgId = Integer.parseInt(sorgId);
                 } catch (NumberFormatException ex) {
-                    throw new CantFindByParam(String.format(" wrong organization convert id=%s", sorgId));
+                    throw new CantFindByParam(String.format(" wrong organization convert id=%s", sorgId), ex);
                 }
                 predicates.add(cb.equal(root.get("organization"), orgId));
                 if (name != null && !name.isEmpty()) {
@@ -85,7 +85,7 @@ public class Specifications {
                     }
                 } catch (NumberFormatException ex) {
                     throw new CantFindByParam(String.format(" wrong convert officeId=%s or docCode=%s or citizenshipCode=%s",
-                            employerView.getOfficeId(), employerView.getDocCode(), employerView.getCitizenshipCode()));
+                            employerView.getOfficeId(), employerView.getDocCode(), employerView.getCitizenshipCode()), ex);
                 }
                 String firstName = employerView.getFirstName();
                 if (firstName != null && !firstName.isEmpty()) {

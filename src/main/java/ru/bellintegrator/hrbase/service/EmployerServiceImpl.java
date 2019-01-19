@@ -107,7 +107,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
         try {
             employerRepository.saveAndFlush(employer);
         } catch (Exception ex) {
-            throw new CantSaveNewObject("employer");
+            throw new CantSaveNewObject("employer", ex);
         }
     }
 
@@ -126,7 +126,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
         try {
             employerRepository.saveAndFlush(employer);
         } catch (Exception ex) {
-            throw new CantUpdateObject("employer");
+            throw new CantUpdateObject("employer", ex);
         }
     }
 
@@ -139,7 +139,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
         try {
             id = Integer.parseInt(sid);
         } catch (NumberFormatException ex) {
-            throw new CantFindByParam(String.format("wrong user convert id=%s", sid));
+            throw new CantFindByParam(String.format("wrong user convert id=%s", sid), ex);
         }
         Optional<Employer> optional = employerRepository.findById(id);
         LOGGER.debug(String.format("Find user by id=%s \n result: %s", id, optional));
@@ -169,7 +169,7 @@ public class EmployerServiceImpl implements GenericService<EmployerView, Employe
                 documentEntity.setDocumentType(docType);
                 documentRepository.saveAndFlush(documentEntity);
             } catch (Exception ex) {
-                throw new CantSaveNewObject("document");
+                throw new CantSaveNewObject("document", ex);
             }
         }
         return documentEntity;

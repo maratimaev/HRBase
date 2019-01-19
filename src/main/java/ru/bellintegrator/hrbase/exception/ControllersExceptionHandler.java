@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.bellintegrator.hrbase.controller.OrganizationController;
 import ru.bellintegrator.hrbase.view.result.Error;
+
+import java.util.Arrays;
 
 /**
  * Класс обработки ошибок
  */
 @RestControllerAdvice
 public class ControllersExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationController.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ControllersExceptionHandler.class.getName());
     /** Обработка исключения при поиске объекта по параметрам
      * @param ex исключение
      * @return Error
@@ -29,7 +30,9 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(CantFindByParam.class)
     public Error handlerCantFindByParam(CantFindByParam ex) {
-        return new Error(String.format("There is no finding by parameter, %s", ex.getParam()));
+        String message = String.format("There is no finding by parameter, %s", ex.getParam());
+        this.log(message, ex.getEx());
+        return new Error(message);
     }
 
     /** Обработка исключения при сохранении объекта в БД
@@ -39,7 +42,9 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CantSaveNewObject.class)
     public Error handlerCantSaveNewObject(CantSaveNewObject ex) {
-        return new Error(String.format("There is a problem while saving new %s to DB", ex.getObj()));
+        String message = String.format("There is a problem while saving new %s to DB", ex.getObj());
+        this.log(message, ex.getEx());
+        return new Error(message);
     }
 
     /** Обработка исключения при обновлении данных объекта в БД
@@ -49,7 +54,9 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CantUpdateObject.class)
     public Error handlerCantUpdateOffice(CantUpdateObject ex) {
-        return new Error(String.format("There is a problem while updating %s to DB", ex.getObj()));
+        String message = String.format("There is a problem while updating %s to DB", ex.getObj());
+        this.log(message, ex.getEx());
+        return new Error(message);
     }
 
     /** Обработка исключения при запросе list и валидации id организации из PathVariable и RequestBody
@@ -59,7 +66,9 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(OrganizationsIdMustBeEquals.class)
     public Error handlerOrganizationsIdMustBeEquals(OrganizationsIdMustBeEquals ex) {
-        return new Error(String.format("Organization id must be the same url_id=%s, json_id=%s", ex.getUrlId(), ex.getJsonId()));
+        String message = String.format("Organization id must be the same url_id=%s, json_id=%s", ex.getUrlId(), ex.getJsonId());
+        this.log(message, null);
+        return new Error(message);
     }
 
     /** Обработка исключения при конвертировании строки в дату
@@ -69,7 +78,9 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(WrongDateFormat.class)
     public Error handlerWrongDateFormat(WrongDateFormat ex) {
-        return new Error(String.format("Date must be like 2001-01-30, get date=%s", ex.getDate()));
+        String message = String.format("Date must be like 2001-01-30, get date=%s", ex.getDate());
+        this.log(message, ex.getEx());
+        return new Error(message);
     }
 
     /** Обработка прочих исключений
@@ -108,5 +119,12 @@ public class ControllersExceptionHandler extends ResponseEntityExceptionHandler 
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Error error = new Error("Error parsing json");
         return super.handleExceptionInternal(ex, error, headers, HttpStatus.NOT_ACCEPTABLE, request);
+    }
+
+    private void log(String message, Exception ex) {
+        if (ex != null) {
+            LOGGER.debug(Arrays.toString(ex.getStackTrace()));
+        }
+        LOGGER.error(String.format("%s : parent exception - %s", message, ex));
     }
 }

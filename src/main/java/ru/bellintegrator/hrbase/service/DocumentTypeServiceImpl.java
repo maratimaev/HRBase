@@ -65,7 +65,7 @@ public class DocumentTypeServiceImpl implements GenericGetByNameService<Document
         try {
             documentTypeRepository.saveAndFlush(mapperFacade.map(docTypeView, DocumentType.class));
         } catch (Exception ex) {
-            throw new CantSaveNewObject("docType");
+            throw new CantSaveNewObject("docType", ex);
         }
     }
 }

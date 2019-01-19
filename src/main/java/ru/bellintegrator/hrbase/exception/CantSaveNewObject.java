@@ -6,11 +6,18 @@ package ru.bellintegrator.hrbase.exception;
 public class CantSaveNewObject extends RuntimeException {
     private String obj;
 
+    private Exception ex;
+
     public CantSaveNewObject() {
     }
 
     public CantSaveNewObject(String obj) {
         this.obj = obj;
+    }
+
+    public CantSaveNewObject(String obj, Exception ex) {
+        this.obj = obj;
+        this.ex = ex;
     }
 
     public String getObj() {
@@ -19,5 +26,13 @@ public class CantSaveNewObject extends RuntimeException {
 
     public void setObj(String obj) {
         this.obj = obj;
+    }
+
+    public Exception getEx() {
+        return ex;
+    }
+
+    public void setEx(RuntimeException ex) {
+        this.ex = ex;
     }
 }

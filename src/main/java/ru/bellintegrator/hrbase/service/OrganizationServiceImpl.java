@@ -69,7 +69,7 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
         try {
             organizationRepository.saveAndFlush(mapperFacade.map(orgView, Organization.class));
         } catch (Exception ex) {
-            throw new CantSaveNewObject("organization");
+            throw new CantSaveNewObject("organization", ex);
         }
     }
 
@@ -85,7 +85,7 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
         try {
             organizationRepository.saveAndFlush(organization);
         } catch (Exception ex) {
-            throw new CantUpdateObject("organization");
+            throw new CantUpdateObject("organization", ex);
         }
     }
 
@@ -98,7 +98,7 @@ public class OrganizationServiceImpl implements GenericService<OrganizationView,
         try {
             id = Integer.parseInt(sid);
         } catch (NumberFormatException ex) {
-            throw new CantFindByParam(String.format("wrong organization convert id=%s", sid));
+            throw new CantFindByParam(String.format("wrong organization convert id=%s", sid), ex);
         }
         Optional<Organization> optional = organizationRepository.findById(id);
         LOGGER.debug(String.format("Find organization by id=%s \n result: %s", id, optional));

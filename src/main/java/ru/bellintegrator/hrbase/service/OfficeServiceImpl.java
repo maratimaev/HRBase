@@ -80,7 +80,7 @@ public class OfficeServiceImpl implements GenericService<OfficeView, Office> {
             office.setOrganization(organization);
             officeRepository.saveAndFlush(office);
         } catch (Exception ex) {
-            throw new CantSaveNewObject("office");
+            throw new CantSaveNewObject("office", ex);
         }
     }
 
@@ -101,7 +101,7 @@ public class OfficeServiceImpl implements GenericService<OfficeView, Office> {
         try {
             officeRepository.saveAndFlush(office);
         } catch (Exception ex) {
-            throw new CantUpdateObject("office");
+            throw new CantUpdateObject("office", ex);
         }
     }
 
@@ -115,7 +115,7 @@ public class OfficeServiceImpl implements GenericService<OfficeView, Office> {
         try {
             id = Integer.parseInt(sid);
         } catch (NumberFormatException ex) {
-            throw new CantFindByParam(String.format("wrong office convert id=%s", sid));
+            throw new CantFindByParam(String.format("wrong office convert id=%s", sid), ex);
         }
         Optional<Office> optional = officeRepository.findById(id);
         LOGGER.debug(String.format("Find office by id=%s \n result: %s", id, optional));

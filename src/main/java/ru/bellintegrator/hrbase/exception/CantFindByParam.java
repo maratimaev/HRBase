@@ -9,11 +9,18 @@ public class CantFindByParam extends RuntimeException {
      */
     private String param;
 
+    private RuntimeException ex;
+
     public CantFindByParam() {
     }
 
     public CantFindByParam(String param) {
         this.param = param;
+    }
+
+    public CantFindByParam(String param, RuntimeException ex) {
+        this.param = param;
+        this.ex = ex;
     }
 
     public String getParam() {
@@ -22,5 +29,13 @@ public class CantFindByParam extends RuntimeException {
 
     public void setParam(String param) {
         this.param = param;
+    }
+
+    public RuntimeException getEx() {
+        return ex;
+    }
+
+    public void setEx(RuntimeException ex) {
+        this.ex = ex;
     }
 }

@@ -88,7 +88,7 @@ public class DateToStringConverter extends BidirectionalConverter<Date, String> 
         try {
             return getDateFormat().parse(source);
         } catch (ParseException e) {
-            throw new WrongDateFormat(source);
+            throw new WrongDateFormat(source, e);
         }
     }
 

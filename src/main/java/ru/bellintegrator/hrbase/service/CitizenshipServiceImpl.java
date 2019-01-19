@@ -51,7 +51,7 @@ public class CitizenshipServiceImpl implements GenericGetByParamService<Country>
         try {
             citizenshipRepository.saveAndFlush(mapperFacade.map(countryView, Country.class));
         } catch (Exception ex) {
-            throw new CantSaveNewObject("country");
+            throw new CantSaveNewObject("country", ex);
         }
     }
 }
